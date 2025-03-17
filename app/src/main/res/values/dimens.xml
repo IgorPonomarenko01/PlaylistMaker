@@ -9,5 +9,5 @@
     <dimen name="button_radius">16dp</dimen>
     <dimen name="start_padding">16dp</dimen>
     <dimen name="end_padding">12dp</dimen>
-    <dimen name="settings_margin_top">42dp</dimen>
+    <dimen name="settings_pad_vert">21dp</dimen>
 </resources>
