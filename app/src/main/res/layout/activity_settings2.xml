@@ -20,7 +20,9 @@
         style="@style/SettingsItemStyle"
         android:layout_marginTop="24dp"
         android:gravity="center_vertical"
-        android:text="@string/dark_theme"/>
+        android:text="@string/dark_theme"
+        app:thumbTint="@color/switch_thumb_color"
+        app:trackTint="@color/switch_track_color"/>
 
     <com.google.android.material.textview.MaterialTextView
         style="@style/SettingsItemStyle"
