@@ -17,24 +17,29 @@
         app:titleTextAppearance="@style/CustomToolbarTitle"
         app:titleTextColor="@color/yp_black"/>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:boxBackgroundMode="filled"
-        app:boxBackgroundColor="@color/yp__light_gray"
-        app:boxStrokeWidth="0dp"
-        app:startIconDrawable="@drawable/search"
-        app:startIconTint="@color/yp_black">
+        android:layout_marginTop="16dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/search"
-            android:textSize="16sp"
-            android:paddingStart="38dp"
-            android:paddingEnd="8dp"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-</LinearLayout>
+    <EditText
+        android:id="@+id/searchInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="48dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:background="@drawable/edittext_background"
+        android:drawableStart="@drawable/search"
+        android:hint="@string/search"/>
+        <ImageView
+            android:id="@+id/searchInputClear"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/baseline_close_24"
+            android:visibility="gone"/>
+    </FrameLayout>
+ </LinearLayout>
