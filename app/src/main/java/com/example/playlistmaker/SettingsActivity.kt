@@ -20,8 +20,11 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
         shareLine.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.practicumLink))
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.practicumLink))
+
+            }
             startActivity(shareIntent)
         }
 

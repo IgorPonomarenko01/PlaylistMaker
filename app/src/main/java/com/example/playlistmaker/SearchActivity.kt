@@ -12,9 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
+
+    private var inputText: String = DEF_TEXT
+
+    companion object {
+        const val INPUT_TEXT = "INPUT_TEXT"
+        const val DEF_TEXT = ""
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
 
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
 
@@ -36,6 +45,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInputClear.visibility = inputClearVisibility(s)
+                inputText = searchInput.text.toString()
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -52,5 +62,15 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(INPUT_TEXT, inputText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
     }
 }
