@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-
     tools:context=".SearchActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -16,28 +15,16 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:paddingHorizontal="16dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="8dp">
 
     <EditText
         android:id="@+id/searchInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="48dp"
-        android:inputType="text"
-        android:maxLines="1"
-        android:background="@drawable/edittext_background"
-        android:drawableStart="@drawable/search"
-        android:hint="@string/search"/>
+        style="@style/SearchEditTextStyle"/>
+
         <ImageView
             android:id="@+id/searchInputClear"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/baseline_close_24"
-            android:visibility="gone"/>
+            style="@style/SearchCancelButton"/>
     </FrameLayout>
  </LinearLayout>
