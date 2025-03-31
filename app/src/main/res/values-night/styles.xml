@@ -5,6 +5,9 @@
         <item name="titleTextColor">@color/yp_white</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="navigationIconTint">@color/yp_white</item>
     </style>
     <style name="SettingsItemStyle">
         <item name="android:layout_width">match_parent</item>
@@ -14,7 +17,10 @@
         <item name="android:paddingVertical">@dimen/settings_pad_vert</item>
         <item name="android:textColor">@color/yp_white</item>
         <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:iconTint">@color/yp_white</item>
     </style>
 
     <style name="MainActButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
@@ -32,5 +38,8 @@
         <item name="cornerRadius">@dimen/button_radius</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
+    </style>
+    <style name="MainActivityStyle">
+        <item name="android:background">@color/yp_black</item>
     </style>
 </resources>
