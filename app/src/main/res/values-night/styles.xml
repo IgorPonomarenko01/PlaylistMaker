@@ -66,8 +66,8 @@
         <item name="android:layout_height">16dp</item>
         <item name="android:layout_gravity">end|center_vertical</item>
         <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:tint">@color/yp_black</item>
         <item name="android:src">@drawable/baseline_close_24</item>
         <item name="android:visibility">gone</item>
-        <item name="iconTint">@color/yp_black</item>
     </style>
 </resources>
