@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -14,23 +15,24 @@ import com.google.android.material.appbar.MaterialToolbar
 class SearchActivity : AppCompatActivity() {
 
     private var inputText: String = DEF_TEXT
+    private lateinit var searchInput: EditText
 
     companion object {
         const val INPUT_TEXT = "INPUT_TEXT"
         const val DEF_TEXT = ""
+        const val TAG = "SEARCH_TEST"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
 
         navBack.setNavigationOnClickListener {
             finish()
         }
-        val searchInput = findViewById<EditText>(R.id.searchInput)
+        searchInput = findViewById<EditText>(R.id.searchInput)
         val searchInputClear = findViewById<ImageView>(R.id.searchInputClear)
 
         searchInputClear.setOnClickListener {
@@ -67,10 +69,13 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_TEXT, inputText)
+        Log.d(TAG, "В onSaveInstanceState сохранен текст: $inputText")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
+        searchInput.setText(inputText)
+        Log.d(TAG, "В onRestoreInstanceState восстановлен текст: $inputText")
     }
 }
