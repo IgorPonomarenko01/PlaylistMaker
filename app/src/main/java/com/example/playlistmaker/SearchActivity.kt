@@ -17,11 +17,7 @@ class SearchActivity : AppCompatActivity() {
     private var inputText: String = DEF_TEXT
     private lateinit var searchInput: EditText
 
-    companion object {
-        const val INPUT_TEXT = "INPUT_TEXT"
-        const val DEF_TEXT = ""
-        const val TAG = "SEARCH_TEST"
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,5 +73,11 @@ class SearchActivity : AppCompatActivity() {
         inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
         searchInput.setText(inputText)
         Log.d(TAG, "В onRestoreInstanceState восстановлен текст: $inputText")
+    }
+
+    companion object {
+        private const val INPUT_TEXT = "INPUT_TEXT"
+        private const val DEF_TEXT = ""
+        private const val TAG = "SEARCH_TEST"
     }
 }

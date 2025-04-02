@@ -51,7 +51,7 @@
         <item name="android:inputType">text</item>
         <item name="android:maxLines">1</item>
         <item name="android:background">@drawable/edittext_background</item>
-        <item name="android:drawableStart">@drawable/search</item>
+        <item name="android:drawableStart">@drawable/search_edit</item>
         <item name="drawableTint">@color/yp__text_gray</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
@@ -62,8 +62,8 @@
     </style>
 
     <style name="SearchCancelButton">
-        <item name="android:layout_width">16dp</item>
-        <item name="android:layout_height">16dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">end|center_vertical</item>
         <item name="android:layout_marginEnd">12dp</item>
         <item name="android:src">@drawable/baseline_close_24</item>

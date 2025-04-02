@@ -13,12 +13,12 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings2)
 
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
-        val shareLine = findViewById<MaterialTextView>(R.id.shareLine)
-        val supportLine = findViewById<MaterialTextView>(R.id.supportLine)
-        val agreementLine = findViewById<MaterialTextView>(R.id.agreementLine)
+
         navBack.setNavigationOnClickListener {
             finish()
         }
+
+        val shareLine = findViewById<MaterialTextView>(R.id.shareLine)
         shareLine.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
@@ -28,6 +28,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
 
+        val supportLine = findViewById<MaterialTextView>(R.id.supportLine)
         supportLine.setOnClickListener {
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
@@ -38,6 +39,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(sendIntent)
         }
 
+        val agreementLine = findViewById<MaterialTextView>(R.id.agreementLine)
         agreementLine.setOnClickListener {
             val browseIntent = Intent(Intent.ACTION_VIEW)
             browseIntent.data = Uri.parse(getString(R.string.agreementLink))
