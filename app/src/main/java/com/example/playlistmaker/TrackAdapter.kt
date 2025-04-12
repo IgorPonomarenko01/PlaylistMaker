@@ -35,6 +35,7 @@ class TrackAdapter(private val tracks: List<Track>) :
             trackTimeView.text = model.trackTime
             Glide.with(itemView.context)
                 .load(model.artworkUrl100)
+                .centerCrop()
                 .placeholder(R.drawable.placeholder)
                 .into(artworkUrl100View)
         }

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="13dp"
     android:layout_marginEnd="12dp"
+    android:layout_marginVertical="8dp"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -11,8 +12,7 @@
         android:id="@+id/artworkImage"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/placeholder" />
+        android:layout_marginEnd="8dp"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -27,7 +27,6 @@
             android:ellipsize="end"
             android:fontFamily="@font/ys_display_regular"
             android:maxLines="1"
-            android:text="Test Track NTest Trackame Text Test Track Name (2025)"
             android:textColor="@color/yp_black"
             android:textFontWeight="400"
             android:textSize="16sp" />
@@ -45,7 +44,6 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/ys_display_regular"
                 android:maxLines="1"
-                android:text=" Nameme TextNameme TextNameme TextNameme TextNameme TextNameme Text"
                 android:textColor="@color/yp__text_gray"
                 android:textFontWeight="400"
                 android:textSize="11sp" />
@@ -60,7 +58,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ys_display_regular"
-                android:text="04:55"
                 android:textColor="@color/yp__text_gray"
                 android:textFontWeight="400"
                 android:textSize="11sp" />
