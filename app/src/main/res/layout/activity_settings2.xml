@@ -9,14 +9,12 @@
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/CustomToolbarTitle"
         app:navigationIcon="@drawable/arrow_back"
-        app:title="@string/settings"
-        app:titleTextAppearance="@style/CustomToolbarTitle"
-        app:titleTextColor="@color/yp_black"/>
+        app:title="@string/settings"/>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/selector"
         style="@style/SettingsItemStyle"
         android:layout_marginTop="24dp"
         android:gravity="center_vertical"
@@ -25,16 +23,19 @@
         app:trackTint="@color/switch_track_color"/>
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/shareLine"
         style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/share"
         android:text="@string/share" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/supportLine"
         style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/support"
         android:text="@string/support" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/agreementLine"
         style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/arrow_forward"
         android:text="@string/agreement" />
