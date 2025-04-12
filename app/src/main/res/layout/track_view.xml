@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="13dp"
     android:layout_marginEnd="12dp"
     android:layout_marginVertical="8dp"
@@ -27,7 +28,7 @@
             android:ellipsize="end"
             android:fontFamily="@font/ys_display_regular"
             android:maxLines="1"
-            android:textColor="@color/yp_black"
+            android:textColor="@color/track_black"
             android:textFontWeight="400"
             android:textSize="16sp" />
 
@@ -44,13 +45,14 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/ys_display_regular"
                 android:maxLines="1"
-                android:textColor="@color/yp__text_gray"
+                android:textColor="@color/track_gray"
                 android:textFontWeight="400"
                 android:textSize="11sp" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:drawableTint="@color/track_gray"
                 android:src="@drawable/dot" />
 
             <TextView
@@ -58,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/yp__text_gray"
+                android:textColor="@color/track_gray"
                 android:textFontWeight="400"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -69,5 +71,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        app:drawableTint="@color/track_gray"
         android:src="@drawable/arrow_forward" />
 </LinearLayout>

@@ -28,7 +28,7 @@ class TrackAdapter(private val tracks: List<Track>) :
     inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val trackNameView: TextView = itemView.findViewById(R.id.trackNameText)
-        val artistNameView: TextView = itemView.findViewById(R.id.artistNameText)
+        private val artistNameView: TextView = itemView.findViewById(R.id.artistNameText)
         private val trackTimeView: TextView = itemView.findViewById(R.id.trackTimeText)
         private val artworkUrl100View: ImageView = itemView.findViewById(R.id.artworkImage)
 
