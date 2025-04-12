@@ -27,4 +27,9 @@
             android:id="@+id/searchInputClear"
             style="@style/SearchCancelButton"/>
     </FrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"/>
  </LinearLayout>
