@@ -70,6 +70,7 @@ class SearchActivity : AppCompatActivity() {
             searchInput.setText("")
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            tracks.clear()
             adapter.notifyDataSetChanged()
         }
 
