@@ -21,6 +21,8 @@
 
     <EditText
         android:id="@+id/searchInput"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         style="@style/SearchEditTextStyle"/>
 
         <ImageView
