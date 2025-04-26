@@ -8,13 +8,14 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,6 +39,9 @@ class SearchActivity : AppCompatActivity() {
 
     private var inputText: String = DEF_TEXT
     private lateinit var searchInput: EditText
+    private lateinit var placeHolderImage: ImageView
+    private lateinit var placeholderMessage: TextView
+    private lateinit var refreshBtn: Button
 
     private val iTunesbaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -57,6 +61,11 @@ class SearchActivity : AppCompatActivity() {
         val recycler = findViewById<RecyclerView>(R.id.trackList)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
+
+        placeHolderImage = findViewById(R.id.placeHolderImage)
+        placeholderMessage = findViewById(R.id.placeHolderMessage)
+        refreshBtn = findViewById(R.id.refreshBtn)
+
 
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
 
@@ -141,6 +150,10 @@ class SearchActivity : AppCompatActivity() {
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
                         }
+                        if (tracks.isEmpty()) {
+                            showPlaceHolder(getString(R.string.not_found), R.drawable.empty_library)
+                            refreshBtn.visibility = View.VISIBLE
+                        }
                     }
                 }
 
@@ -148,6 +161,19 @@ class SearchActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
+        }
+    }
+
+    private fun showPlaceHolder(text: String, imageId: Int) {
+        if (text.isNotEmpty()) {
+            placeHolderImage.visibility = View.VISIBLE
+            tracks.clear()
+            adapter.notifyDataSetChanged()
+            placeHolderImage.setImageResource(imageId)
+            placeholderMessage.text = text
+        } else {
+            placeHolderImage.visibility = View.GONE
+            placeholderMessage.visibility = View.GONE
         }
     }
 }
