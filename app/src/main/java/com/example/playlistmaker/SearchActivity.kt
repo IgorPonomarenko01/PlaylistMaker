@@ -100,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchInput.setOnEditorActionListener { _, actionId, _, ->
             if(actionId == EditorInfo.IME_ACTION_DONE) {
-            var text = searchInput.text.toString()
+            val text = searchInput.text.toString()
             searchTracks(text)
 
                 true
@@ -149,16 +149,20 @@ class SearchActivity : AppCompatActivity() {
                             Log.d(TAG, "Tracks got: ${response.body()?.results}")
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
-                        }
-                        if (tracks.isEmpty()) {
+                        } else {
                             showPlaceHolder(getString(R.string.not_found), R.drawable.empty_library)
-                            refreshBtn.visibility = View.VISIBLE
                         }
+                    } else {
+                        Log.d(TAG, "Error: ${response.code()}")
+                        showPlaceHolder(getString(R.string.no_connection), R.drawable.no_connection)
+                        refreshBtn.visibility = View.VISIBLE
                     }
                 }
 
                 override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                    Toast.makeText(applicationContext, "${t.message}", Toast.LENGTH_LONG).show()
+                    Log.d(TAG, "Error: ${t.message}")
+                    showPlaceHolder(getString(R.string.no_connection), R.drawable.no_connection)
+                    refreshBtn.visibility = View.VISIBLE
                 }
             })
         }
