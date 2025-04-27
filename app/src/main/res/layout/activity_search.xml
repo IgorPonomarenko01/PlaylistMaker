@@ -38,11 +38,13 @@
         android:id="@+id/placeHolderImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/placeHolderMessage"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
     <Button
         android:id="@+id/refreshBtn"
         android:layout_width="wrap_content"

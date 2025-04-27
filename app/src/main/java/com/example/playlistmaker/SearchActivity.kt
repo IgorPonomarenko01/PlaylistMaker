@@ -66,6 +66,12 @@ class SearchActivity : AppCompatActivity() {
         placeholderMessage = findViewById(R.id.placeHolderMessage)
         refreshBtn = findViewById(R.id.refreshBtn)
 
+        refreshBtn.setOnClickListener {
+            placeHolderImage.visibility = View.GONE
+            placeholderMessage.visibility = View.GONE
+            searchTracks(searchInput.text.toString())
+            refreshBtn.visibility = View.GONE
+        }
 
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
 
@@ -102,7 +108,6 @@ class SearchActivity : AppCompatActivity() {
             if(actionId == EditorInfo.IME_ACTION_DONE) {
             val text = searchInput.text.toString()
             searchTracks(text)
-
                 true
             }
             false
@@ -171,13 +176,11 @@ class SearchActivity : AppCompatActivity() {
     private fun showPlaceHolder(text: String, imageId: Int) {
         if (text.isNotEmpty()) {
             placeHolderImage.visibility = View.VISIBLE
+            placeholderMessage.visibility = View.VISIBLE
             tracks.clear()
             adapter.notifyDataSetChanged()
             placeHolderImage.setImageResource(imageId)
             placeholderMessage.text = text
-        } else {
-            placeHolderImage.visibility = View.GONE
-            placeholderMessage.visibility = View.GONE
         }
     }
 }
