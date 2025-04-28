@@ -66,10 +66,8 @@ class SearchActivity : AppCompatActivity() {
         refreshBtn = findViewById(R.id.refreshBtn)
 
         refreshBtn.setOnClickListener {
-            placeHolderImage.visibility = View.GONE
-            placeholderMessage.visibility = View.GONE
+            hidePlaceholder()
             searchTracks(searchInput.text.toString())
-            refreshBtn.visibility = View.GONE
         }
 
         val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
@@ -84,6 +82,7 @@ class SearchActivity : AppCompatActivity() {
             searchInput.setText("")
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            hidePlaceholder()
             tracks.clear()
             adapter.notifyDataSetChanged()
         }
@@ -154,32 +153,52 @@ class SearchActivity : AppCompatActivity() {
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
                         } else {
-                            showPlaceHolder(getString(R.string.not_found), R.drawable.empty_library)
+                            showPlaceHolder(
+                                getString(R.string.not_found),
+                                R.drawable.empty_library,
+                                false
+                            )
                         }
                     } else {
                         Log.d(TAG, "Error: ${response.code()}")
-                        showPlaceHolder(getString(R.string.no_connection), R.drawable.no_connection)
-                        refreshBtn.visibility = View.VISIBLE
+                        showPlaceHolder(
+                            getString(R.string.no_connection),
+                            R.drawable.no_connection,
+                            true
+                        )
                     }
                 }
 
                 override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                    Log.d(TAG, "Error: ${t.message}")
-                    showPlaceHolder(getString(R.string.no_connection), R.drawable.no_connection)
-                    refreshBtn.visibility = View.VISIBLE
+                    Log.e(TAG, "Error:", t)
+                    showPlaceHolder(
+                        getString(R.string.no_connection),
+                        R.drawable.no_connection,
+                        true
+                    )
                 }
             })
         }
     }
 
-    private fun showPlaceHolder(text: String, imageId: Int) {
+    private fun showPlaceHolder(text: String, imageId: Int, showRefresh: Boolean) {
         if (text.isNotEmpty()) {
-            placeHolderImage.visibility = View.VISIBLE
-            placeholderMessage.visibility = View.VISIBLE
-            tracks.clear()
-            adapter.notifyDataSetChanged()
             placeHolderImage.setImageResource(imageId)
             placeholderMessage.text = text
+
+            placeHolderImage.visibility = View.VISIBLE
+            placeholderMessage.visibility = View.VISIBLE
+            refreshBtn.visibility = if (showRefresh) View.VISIBLE else View.GONE
+
+            tracks.clear()
+            adapter.notifyDataSetChanged()
+
         }
+    }
+
+    private fun hidePlaceholder() {
+        placeHolderImage.visibility = View.GONE
+        placeholderMessage.visibility = View.GONE
+        refreshBtn.visibility = View.GONE
     }
 }
