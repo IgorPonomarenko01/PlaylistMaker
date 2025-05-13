@@ -67,6 +67,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         searchHistory = (applicationContext as App).searchHistory
+        sharedPrefs = (applicationContext as App).sharedPrefs
 
         adapter = TrackAdapter(tracks) { clickedTrack ->
             searchHistory.addTrackToHistory(clickedTrack)
@@ -118,6 +119,11 @@ class SearchActivity : AppCompatActivity() {
             tracks.clear()
             adapter.notifyDataSetChanged()
             showHistoryIfEmpty()
+        }
+
+        clearHistoryBtn.setOnClickListener {
+            searchHistory.clearHistory()
+            updateHistoryView()
         }
 
         val searchInputTextWatcher = object : TextWatcher {

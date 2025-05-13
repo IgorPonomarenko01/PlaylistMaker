@@ -26,5 +26,10 @@ class SearchHistory(private val sharedPrefs : SharedPreferences) {
         val json = sharedPrefs.getString(TRACK_HISTORY_KEY, null) ?: return emptyList()
         return  Gson().fromJson(json, Array<Track>::class.java).toList()
     }
+    fun clearHistory() {
+        sharedPrefs.edit()
+            .remove(TRACK_HISTORY_KEY)
+            .apply()
+    }
 
 }
