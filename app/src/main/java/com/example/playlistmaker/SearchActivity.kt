@@ -51,11 +51,18 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ItunesApi::class.java)
 
     private val tracks = ArrayList<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private lateinit var adapter : TrackAdapter
+    private lateinit var searchHistory: SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        searchHistory = (applicationContext as App).searchHistory
+
+        adapter = TrackAdapter(tracks) { clickedTrack ->
+            searchHistory.addTrackToHistory(clickedTrack)
+        }
 
         val recycler = findViewById<RecyclerView>(R.id.trackList)
         recycler.layoutManager = LinearLayoutManager(this)
