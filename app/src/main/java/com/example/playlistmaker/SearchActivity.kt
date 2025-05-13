@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.prefs.PreferenceChangeListener
 
 interface ItunesApi {
     @GET("/search?entity=song")
@@ -41,6 +44,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeHolderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshBtn: Button
+    private lateinit var searchHistoryLayout: LinearLayout
+    private lateinit var trackHistoryList: RecyclerView
+    private lateinit var clearHistoryBtn: Button
 
     private val iTunesbaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -52,8 +58,10 @@ class SearchActivity : AppCompatActivity() {
 
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
+    private lateinit var historyAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
-
+    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -64,13 +72,30 @@ class SearchActivity : AppCompatActivity() {
             searchHistory.addTrackToHistory(clickedTrack)
         }
 
+        historyAdapter = TrackAdapter(ArrayList()) { clickedTrack ->
+            searchHistory.addTrackToHistory(clickedTrack)
+        }
+
+        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener{ _, key ->
+            if (key == TRACK_HISTORY_KEY) {
+                updateHistoryView()
+            }
+        }
+        (applicationContext as App).sharedPrefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+
         val recycler = findViewById<RecyclerView>(R.id.trackList)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
+        trackHistoryList = findViewById(R.id.trackHistoryList)
+        trackHistoryList.layoutManager = LinearLayoutManager(this)
+        trackHistoryList.adapter = historyAdapter
+
         placeHolderImage = findViewById(R.id.placeHolderImage)
         placeholderMessage = findViewById(R.id.placeHolderMessage)
         refreshBtn = findViewById(R.id.refreshBtn)
+        searchHistoryLayout = findViewById(R.id.searchHistoryLayout)
+        clearHistoryBtn = findViewById(R.id.clearHistoryBtn)
 
         refreshBtn.setOnClickListener {
             hidePlaceholder()
@@ -92,6 +117,7 @@ class SearchActivity : AppCompatActivity() {
             hidePlaceholder()
             tracks.clear()
             adapter.notifyDataSetChanged()
+            showHistoryIfEmpty()
         }
 
         val searchInputTextWatcher = object : TextWatcher {
@@ -101,6 +127,11 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInputClear.visibility = inputClearVisibility(s)
                 inputText = searchInput.text.toString()
+                if(s.isNullOrEmpty()) {
+                    showHistoryIfEmpty()
+                } else {
+                    hideHistory()
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -117,7 +148,7 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-
+        updateHistoryView()
     }
 
     private fun inputClearVisibility(s: CharSequence?): Int {
@@ -131,14 +162,12 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_TEXT, inputText)
-        Log.d(TAG, "В onSaveInstanceState сохранен текст: $inputText")
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
         searchInput.setText(inputText)
-        Log.d(TAG, "В onRestoreInstanceState восстановлен текст: $inputText")
     }
 
     companion object {
@@ -159,6 +188,7 @@ class SearchActivity : AppCompatActivity() {
                             Log.d(TAG, "Tracks got: ${response.body()?.results}")
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
+                            hideHistory()
                         } else {
                             showPlaceHolder(
                                 getString(R.string.not_found),
@@ -199,7 +229,7 @@ class SearchActivity : AppCompatActivity() {
 
             tracks.clear()
             adapter.notifyDataSetChanged()
-
+            hideHistory()
         }
     }
 
@@ -207,5 +237,24 @@ class SearchActivity : AppCompatActivity() {
         placeHolderImage.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
         refreshBtn.visibility = View.GONE
+    }
+
+    private fun updateHistoryView() {
+        val historyTracks = searchHistory.getTrackHistory()
+        if (historyTracks.isNotEmpty()) {
+            historyAdapter.updateTracks(historyTracks)
+            searchHistoryLayout.visibility = View.VISIBLE
+        } else {
+            searchHistoryLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showHistoryIfEmpty() {
+        if (searchInput.text.isNullOrEmpty()) {
+            updateHistoryView()
+        }
+    }
+    private fun hideHistory() {
+        searchHistoryLayout.visibility = View.GONE
     }
 }

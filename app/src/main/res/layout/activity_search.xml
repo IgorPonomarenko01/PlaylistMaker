@@ -29,7 +29,12 @@
             android:id="@+id/searchInputClear"
             style="@style/SearchCancelButton"/>
     </FrameLayout>
-
+<LinearLayout
+    android:id="@+id/searchHistoryLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
     <TextView
         android:id="@+id/searchHistoryText"
         android:layout_width="wrap_content"
@@ -41,9 +46,11 @@
         android:text="@string/searchHistoryTitle"
         android:textColor="@color/search_placeholder_black"
         android:textFontWeight="500"
-        android:textSize="19sp"
-        android:visibility="gone" />
-
+        android:textSize="19sp"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackHistoryList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <Button
         android:id="@+id/clearHistoryBtn"
         android:layout_width="wrap_content"
@@ -57,8 +64,8 @@
         android:textColor="@color/search_placeholder_white"
         android:textFontWeight="500"
         android:textSize="14sp"
-        android:visibility="gone"
         app:cornerRadius="54dp" />
+</LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trackList"
         android:layout_width="match_parent"
