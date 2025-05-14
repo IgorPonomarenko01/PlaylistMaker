@@ -276,4 +276,9 @@ class SearchActivity : AppCompatActivity() {
         searchHistoryLayout.visibility = View.GONE
         recycler.visibility = View.VISIBLE
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedPrefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+    }
 }
