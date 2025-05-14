@@ -19,7 +19,6 @@ class SearchHistory(private val sharedPrefs : SharedPreferences) {
         sharedPrefs.edit()
             .putString(TRACK_HISTORY_KEY, Gson().toJson(newHistory))
             .apply()
-        Log.d("DB", "${track.trackName} has been saved to SP")
     }
 
     fun getTrackHistory(): List<Track> {
