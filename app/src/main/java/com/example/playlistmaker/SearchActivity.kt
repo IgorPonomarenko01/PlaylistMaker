@@ -61,6 +61,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var recycler: RecyclerView
     private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +85,7 @@ class SearchActivity : AppCompatActivity() {
         }
         (applicationContext as App).sharedPrefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
-        val recycler = findViewById<RecyclerView>(R.id.trackList)
+        recycler = findViewById(R.id.trackList)
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
 
@@ -126,14 +127,23 @@ class SearchActivity : AppCompatActivity() {
             updateHistoryView()
         }
 
+        searchInput.setOnFocusChangeListener{ _, hasFocus ->
+            if(hasFocus && searchInput.text.isNullOrEmpty()) {
+                updateHistoryView()
+            } else {
+                hideHistory()
+            }
+        }
+
         val searchInputTextWatcher = object : TextWatcher {
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInputClear.visibility = inputClearVisibility(s)
                 inputText = searchInput.text.toString()
-                if(s.isNullOrEmpty()) {
+               if(s.isNullOrEmpty()) {
                     showHistoryIfEmpty()
                 } else {
                     hideHistory()
@@ -154,7 +164,6 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-        updateHistoryView()
     }
 
     private fun inputClearVisibility(s: CharSequence?): Int {
@@ -247,20 +256,24 @@ class SearchActivity : AppCompatActivity() {
 
     private fun updateHistoryView() {
         val historyTracks = searchHistory.getTrackHistory()
-        if (historyTracks.isNotEmpty()) {
+        if (searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
             historyAdapter.updateTracks(historyTracks)
             searchHistoryLayout.visibility = View.VISIBLE
+            recycler.visibility = View.GONE
         } else {
-            searchHistoryLayout.visibility = View.GONE
+            hideHistory()
         }
     }
 
     private fun showHistoryIfEmpty() {
         if (searchInput.text.isNullOrEmpty()) {
             updateHistoryView()
+        } else {
+            hideHistory()
         }
     }
     private fun hideHistory() {
         searchHistoryLayout.visibility = View.GONE
+        recycler.visibility = View.VISIBLE
     }
 }
