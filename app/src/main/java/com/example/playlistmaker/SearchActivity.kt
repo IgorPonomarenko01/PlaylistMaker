@@ -260,6 +260,7 @@ class SearchActivity : AppCompatActivity() {
             historyAdapter.updateTracks(historyTracks)
             searchHistoryLayout.visibility = View.VISIBLE
             recycler.visibility = View.GONE
+            hidePlaceholder()
         } else {
             hideHistory()
         }
