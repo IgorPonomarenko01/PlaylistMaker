@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.appbar.MaterialToolbar
@@ -29,6 +30,7 @@ class AudioPlayer : AppCompatActivity() {
         val artistName = findViewById<TextView>(R.id.artistName)
         val trackTime = findViewById<TextView>(R.id.trackTime)
         val collectionName = findViewById<TextView>(R.id.collectionName)
+        val collectionNameText = findViewById<TextView>(R.id.collectionNameText)
         val releaseDate = findViewById<TextView>(R.id.releaseDate)
         val primaryGenreName = findViewById<TextView>(R.id.primaryGenreName)
         val country = findViewById<TextView>(R.id.country)
@@ -41,7 +43,12 @@ class AudioPlayer : AppCompatActivity() {
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = track.trackTime
-        collectionName.text = track.collectionName
+        if (track.collectionName.isNullOrEmpty()) {
+            collectionNameText.isVisible = false
+            collectionName.isVisible = false
+        } else {
+            collectionName.text = track.collectionName
+        }
         releaseDate.text = track.releaseYear
         primaryGenreName.text = track.primaryGenreName
         country.text = track.country

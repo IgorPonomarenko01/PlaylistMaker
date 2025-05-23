@@ -10,7 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="28dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/firstLeftBorder"
@@ -39,6 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp" />
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
         style="@style/CustomToolbarTitle"
@@ -46,31 +48,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ImageView
-        android:id="@+id/trackImage"
-        android:layout_width="312dp"
-        android:layout_height="312dp"
-        android:layout_marginTop="26dp"
-        app:layout_constraintStart_toStartOf="@+id/secondLeftBorder"
-        app:layout_constraintEnd_toEndOf="@+id/secondRightBorder"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-        tools:src="@drawable/placeholder"/>
+        <ImageView
+            android:id="@+id/trackImage"
+            android:layout_width="312dp"
+            android:layout_height="312dp"
+            android:layout_marginTop="26dp"
+            app:layout_constraintEnd_toEndOf="@+id/secondRightBorder"
+            app:layout_constraintStart_toStartOf="@+id/secondLeftBorder"
+            app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+            tools:src="@drawable/placeholder" />
 
-    <TextView
-        android:id="@+id/trackName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ys_display_medium"
-        android:layout_marginTop="24dp"
-        android:textColor="@color/search_placeholder_black"
-        android:textFontWeight="400"
-        android:textSize="22sp"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
-        app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
-        app:layout_constraintTop_toBottomOf="@+id/trackImage"
-        tools:text="trackNametrackNametrackNametrackNametrackNametrackNametrackNametrackName"/>
-    <TextView
+        <TextView
+            android:id="@+id/trackName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/search_placeholder_black"
+            android:textFontWeight="400"
+            android:textSize="22sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
+            app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+            app:layout_constraintTop_toBottomOf="@+id/trackImage"
+            tools:text="trackNametrackNametrackNametrackNametrackNametrackNametrackNametrackName" />
+
+        <TextView
         android:id="@+id/artistName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -196,10 +199,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/AudioPlayerTrackDescription"
-        android:layout_marginBottom="28dp"
         app:layout_constraintTop_toBottomOf="@+id/primaryGenreNameText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/country"/>
     <TextView
         android:id="@+id/country"
