@@ -48,15 +48,9 @@ class TrackAdapter(private var tracks: List<Track>,
             Glide.with(itemView.context)
                 .load(model.artworkUrl100)
                 .centerCrop()
-                .transform(RoundedCorners(dpToPx(2f, itemView.context)))
+                .transform(RoundedCorners(Utils.dpToPx(2f, itemView.context)))
                 .placeholder(R.drawable.placeholder)
                 .into(artworkUrl100View)
-        }
-        fun dpToPx(dp: Float, context: Context): Int {
-            return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                context.resources.displayMetrics).toInt()
         }
     }
 }

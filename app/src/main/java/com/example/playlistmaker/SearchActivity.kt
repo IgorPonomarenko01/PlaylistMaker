@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -72,10 +73,12 @@ class SearchActivity : AppCompatActivity() {
 
         adapter = TrackAdapter(tracks) { clickedTrack ->
             searchHistory.addTrackToHistory(clickedTrack)
+            playTrack(clickedTrack)
         }
 
         historyAdapter = TrackAdapter(ArrayList()) { clickedTrack ->
             searchHistory.addTrackToHistory(clickedTrack)
+            playTrack(clickedTrack)
         }
 
         preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener{ _, key ->
@@ -276,6 +279,13 @@ class SearchActivity : AppCompatActivity() {
     private fun hideHistory() {
         searchHistoryLayout.visibility = View.GONE
         recycler.visibility = View.VISIBLE
+    }
+
+    private fun playTrack(track: Track) {
+        val playerIntent = Intent(this, AudioPlayer::class.java).apply {
+            putExtra("TRACK_KEY", track)
+        }
+        startActivity(playerIntent)
     }
 
     override fun onDestroy() {
