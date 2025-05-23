@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".AudioPlayer">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/firstLeftBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/firstRightBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/secondLeftBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="24dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/secondRightBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="24dp" />
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
         style="@style/CustomToolbarTitle"
@@ -18,8 +51,8 @@
         android:layout_width="312dp"
         android:layout_height="312dp"
         android:layout_marginTop="26dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/secondLeftBorder"
+        app:layout_constraintEnd_toEndOf="@+id/secondRightBorder"
         app:layout_constraintTop_toBottomOf="@+id/tool_bar"
         tools:src="@drawable/placeholder"/>
 
@@ -27,9 +60,13 @@
         android:id="@+id/trackName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/ys_display_medium"
         android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/search_placeholder_black"
+        android:textFontWeight="400"
+        android:textSize="22sp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
         app:layout_constraintTop_toBottomOf="@+id/trackImage"
         tools:text="trackName"/>
     <TextView
@@ -37,8 +74,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="@color/search_placeholder_black"
+        android:textFontWeight="400"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
         app:layout_constraintTop_toBottomOf="@+id/trackName"
         tools:text="artistName"/>
     <ImageView
@@ -48,7 +88,6 @@
         android:layout_marginTop="54dp"
         app:layout_constraintTop_toBottomOf="@+id/artistName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside"
         android:src="@drawable/queue"/>
     <ImageView
         android:id="@+id/play"
@@ -70,7 +109,10 @@
         android:id="@+id/playTimeMillis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:fontFamily="@font/ys_display_medium"
+        android:textColor="@color/search_placeholder_black"
+        android:textFontWeight="500"
+        android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@+id/play"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,30 +122,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/playTimeMillis"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="Длительность"/>
     <TextView
         android:id="@+id/trackTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/trackTimeText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
         tools:text="05:19"/>
     <TextView
         android:id="@+id/collectionNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/trackTimeText"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="Альбом"/>
     <TextView
         android:id="@+id/collectionName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/collectionNameText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
         tools:text="Альбом"/>
 
     <TextView
@@ -111,15 +157,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/collectionNameText"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="Год"/>
     <TextView
         android:id="@+id/releaseDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/releaseDateText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
         tools:text="2000"/>
 
     <TextView
@@ -127,15 +175,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/releaseDateText"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="Жанр"/>
     <TextView
         android:id="@+id/primaryGenreName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/primaryGenreNameText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
         tools:text="Rock"/>
 
     <TextView
@@ -143,14 +193,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/primaryGenreNameText"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="Страна"/>
     <TextView
         android:id="@+id/country"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/countryText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
         tools:text="Великобритания"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
