@@ -20,4 +20,9 @@
     <string name="refreshBtn">Обновить</string>
     <string name="searchHistoryTitle">Вы искали</string>
     <string name="clearHistoryBtnText">Очистить историю</string>
+    <string name="trackTime">Длительность</string>
+    <string name="collectionName">Альбом</string>
+    <string name="releaseYear">Год</string>
+    <string name="primaryGenreName">Жанр</string>
+    <string name="country">Страна</string>
 </resources>

@@ -42,7 +42,7 @@ class AudioPlayer : AppCompatActivity() {
         artistName.text = track.artistName
         trackTime.text = track.trackTime
         collectionName.text = track.collectionName
-        releaseDate.text = track.releaseDate
+        releaseDate.text = track.releaseYear
         primaryGenreName.text = track.primaryGenreName
         country.text = track.country
     }

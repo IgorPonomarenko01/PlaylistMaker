@@ -67,8 +67,9 @@
         android:textSize="22sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+        app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
         app:layout_constraintTop_toBottomOf="@+id/trackImage"
-        tools:text="trackName"/>
+        tools:text="trackNametrackNametrackNametrackNametrackNametrackNametrackNametrackName"/>
     <TextView
         android:id="@+id/artistName"
         android:layout_width="wrap_content"
@@ -78,21 +79,25 @@
         android:textColor="@color/search_placeholder_black"
         android:textFontWeight="400"
         android:textSize="14sp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
+        app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
         app:layout_constraintTop_toBottomOf="@+id/trackName"
-        tools:text="artistName"/>
+        tools:text="artistNameartistNameartistNameartistNameartistNameartistNameartistNameartistName"/>
     <ImageView
         android:id="@+id/queue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="54dp"
         app:layout_constraintTop_toBottomOf="@+id/artistName"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
         android:src="@drawable/queue"/>
     <ImageView
         android:id="@+id/play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="55dp"
         app:layout_constraintTop_toBottomOf="@+id/artistName"
         app:layout_constraintStart_toEndOf="@+id/queue"
         app:layout_constraintEnd_toStartOf="@+id/favourite"
@@ -101,9 +106,9 @@
         android:id="@+id/favourite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
         app:layout_constraintTop_toBottomOf="@+id/artistName"
-        app:layout_constraintStart_toEndOf="@+id/play"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
         android:src="@drawable/favourite"/>
     <TextView
         android:id="@+id/playTimeMillis"
@@ -125,7 +130,7 @@
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/playTimeMillis"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        android:text="Длительность"/>
+        android:text="@string/trackTime"/>
     <TextView
         android:id="@+id/trackTime"
         android:layout_width="wrap_content"
@@ -142,7 +147,7 @@
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/trackTimeText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        android:text="Альбом"/>
+        android:text="@string/collectionName"/>
     <TextView
         android:id="@+id/collectionName"
         android:layout_width="wrap_content"
@@ -160,7 +165,7 @@
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/collectionNameText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        android:text="Год"/>
+        android:text="@string/releaseYear"/>
     <TextView
         android:id="@+id/releaseDate"
         android:layout_width="wrap_content"
@@ -178,7 +183,7 @@
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/releaseDateText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        android:text="Жанр"/>
+        android:text="@string/primaryGenreName"/>
     <TextView
         android:id="@+id/primaryGenreName"
         android:layout_width="wrap_content"
@@ -196,7 +201,9 @@
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/primaryGenreNameText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
-        android:text="Страна"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="28dp"
+        android:text="@string/country"/>
     <TextView
         android:id="@+id/country"
         android:layout_width="wrap_content"
