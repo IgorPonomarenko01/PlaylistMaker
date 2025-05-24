@@ -91,8 +91,7 @@
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/yp__text_gray</item>
-        <item name="android:layout_marginTop">9dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginTop">17dp</item>
     </style>
     <style name="AudioPlayerTrackValue">
         <item name="android:fontFamily">@font/ys_display_regular</item>

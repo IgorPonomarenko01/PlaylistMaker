@@ -40,6 +40,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="24dp" />
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/collectionNameBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_tags="collectionNameTag"
+            android:layout_marginEnd="8dp"
+            app:barrierDirection="end"/>
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
@@ -60,7 +67,7 @@
 
         <TextView
             android:id="@+id/trackName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:fontFamily="@font/ys_display_medium"
@@ -71,11 +78,11 @@
             app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
             app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
             app:layout_constraintTop_toBottomOf="@+id/trackImage"
-            tools:text="trackNametrackNametrackNametrackNametrackNametrackNametrackNametrackName" />
+            tools:text="trackNametrackrackNametrackrackNametrackrackNametrackrackNametrackName" />
 
         <TextView
         android:id="@+id/artistName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/ys_display_medium"
@@ -86,7 +93,7 @@
         app:layout_constraintStart_toStartOf="@id/secondLeftBorder"
         app:layout_constraintEnd_toEndOf="@id/secondRightBorder"
         app:layout_constraintTop_toBottomOf="@+id/trackName"
-        tools:text="artistNameartistNameartistNameartistNameartistNameartistNameartistNameartistName"/>
+            tools:text="artistNameartistNaestNameartistNaestNameartistNaestNameartistNaestNameartistNaeartistName" />
     <ImageView
         android:id="@+id/queue"
         android:layout_width="wrap_content"
@@ -147,18 +154,23 @@
         android:id="@+id/collectionNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTag="collectionNameTag"
         style="@style/AudioPlayerTrackDescription"
         app:layout_constraintTop_toBottomOf="@+id/trackTimeText"
         app:layout_constraintStart_toStartOf="@+id/firstLeftBorder"
         android:text="@string/collectionName"/>
     <TextView
         android:id="@+id/collectionName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:gravity="end"
         style="@style/AudioPlayerTrackValue"
         app:layout_constraintBaseline_toBaselineOf="@+id/collectionNameText"
+        app:layout_constraintStart_toEndOf="@id/collectionNameBarrier"
         app:layout_constraintEnd_toEndOf="@+id/firstRightBorder"
-        tools:text="Альбом"/>
+        tools:text="Альбом АльбомАлАльбомАльбомьбомАльбомАлАльбомАльбомьбомАльбомАлАльбомАльбомАл"/>
 
     <TextView
         android:id="@+id/releaseDateText"
