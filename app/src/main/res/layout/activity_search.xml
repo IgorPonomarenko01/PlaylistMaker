@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
         style="@style/CustomToolbarTitle"
-        app:navigationIcon="@drawable/arrow_back"
+        app:navigationIcon="@drawable/ic_back_arrow_24"
         app:title="@string/search"/>
 
     <FrameLayout
