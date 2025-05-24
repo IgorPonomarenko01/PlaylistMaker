@@ -283,7 +283,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun playTrack(track: Track) {
         val playerIntent = Intent(this, AudioPlayer::class.java).apply {
-            putExtra("TRACK_KEY", track)
+            putExtra(Constants.TRACK_KEY, track)
         }
         startActivity(playerIntent)
     }

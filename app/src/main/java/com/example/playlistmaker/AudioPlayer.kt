@@ -23,7 +23,7 @@ class AudioPlayer : AppCompatActivity() {
             finish()
         }
 
-        val track = intent.getSerializableExtra("TRACK_KEY") as Track
+        val track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
 
         val trackImage = findViewById<ImageView>(R.id.trackImage)
         val trackName = findViewById<TextView>(R.id.trackName)
