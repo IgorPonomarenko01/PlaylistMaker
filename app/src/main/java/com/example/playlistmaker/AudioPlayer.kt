@@ -82,7 +82,16 @@ class AudioPlayer : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        pausePLayer()
+        if (isFinishing || !isChangingConfigurations) {
+            pausePLayer()
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (!hasFocus && playerState == STATE_PLAYING) {
+            pausePLayer()
+        }
     }
 
     override fun onDestroy() {
@@ -109,6 +118,9 @@ class AudioPlayer : AppCompatActivity() {
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
+            handler.removeCallbacks(playTimerRunnable)
+            play.setImageResource(R.drawable.play)
+            playTimeMillis.text = getString(R.string.trackTimeMillisDefault)
             playerState = STATE_PREPARED
         }
     }
