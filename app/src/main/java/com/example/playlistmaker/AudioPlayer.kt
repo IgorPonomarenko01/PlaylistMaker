@@ -2,6 +2,8 @@ package com.example.playlistmaker
 
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -9,12 +11,24 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.appbar.MaterialToolbar
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AudioPlayer : AppCompatActivity() {
 
     private lateinit var play: ImageView
     private var mediaPlayer = MediaPlayer()
     private lateinit var url: String
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var playTimeMillis: TextView
+    private val playTimerRunnable = object : Runnable {
+        override fun run() {
+            updateTimer()
+            handler.postDelayed(this, REFRESH_CURRENT_POSITION)
+        }
+    }
+
+    private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +52,7 @@ class AudioPlayer : AppCompatActivity() {
         val releaseDate = findViewById<TextView>(R.id.releaseDate)
         val primaryGenreName = findViewById<TextView>(R.id.primaryGenreName)
         val country = findViewById<TextView>(R.id.country)
+        playTimeMillis = findViewById(R.id.playTimeMillis)
         play = findViewById(R.id.playBtn)
 
         preparePlayer()
@@ -63,7 +78,6 @@ class AudioPlayer : AppCompatActivity() {
         play.setOnClickListener {
             playbackControl()
         }
-
     }
 
     override fun onPause() {
@@ -73,6 +87,7 @@ class AudioPlayer : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        handler.removeCallbacks(playTimerRunnable)
         mediaPlayer.release()
     }
 
@@ -81,6 +96,7 @@ class AudioPlayer : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
+        private const val REFRESH_CURRENT_POSITION = 300L
     }
 
     private var playerState = STATE_DEFAULT
@@ -101,12 +117,15 @@ class AudioPlayer : AppCompatActivity() {
         mediaPlayer.start()
         play.setImageResource(R.drawable.pause)
         playerState = STATE_PLAYING
+        handler.post(playTimerRunnable)
     }
 
     private fun pausePLayer() {
         mediaPlayer.pause()
         play.setImageResource(R.drawable.play)
         playerState = STATE_PAUSED
+        handler.removeCallbacks(playTimerRunnable)
+        updateTimer()
     }
 
     private fun playbackControl() {
@@ -118,5 +137,10 @@ class AudioPlayer : AppCompatActivity() {
                 startPlayer()
             }
         }
+    }
+
+    private fun updateTimer() {
+        val currentPosition = mediaPlayer.currentPosition
+        playTimeMillis.text = timeFormatter.format(currentPosition)
     }
 }
