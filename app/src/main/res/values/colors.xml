@@ -12,4 +12,5 @@
     <color name="track_gray">#AEAFB4</color>
     <color name="search_placeholder_black">#1A1B22</color>
     <color name="search_placeholder_white">#FFFFFFFF</color>
+    <color name="progressbar_blue">#3772E7</color>
 </resources>
