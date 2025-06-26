@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".LibraryActivity">
+    tools:context=".presentation.LibraryActivity">
 
     <TextView
         android:layout_width="wrap_content"

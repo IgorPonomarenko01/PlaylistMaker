@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.content.Context
 import android.content.Intent
@@ -21,24 +21,20 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.App
+import com.example.playlistmaker.Constants
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.TRACK_HISTORY_KEY
+import com.example.playlistmaker.data.network.ItunesApi
+import com.example.playlistmaker.data.dto.ItunesResponse
+import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.appbar.MaterialToolbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
-
-interface ItunesApi {
-    @GET("/search?entity=song")
-    fun search(@Query("term") text: String): Call<ItunesResponse>
-}
-
-class ItunesResponse (
-    val resultCount: Int,
-    val results: List<Track>
-)
 
 class SearchActivity : AppCompatActivity() {
 
