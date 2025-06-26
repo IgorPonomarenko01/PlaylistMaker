@@ -4,5 +4,5 @@ import com.example.playlistmaker.domain.models.Track
 
 class ItunesResponse (
     val resultCount: Int,
-    val results: List<Track>
+    val results: List<TrackDto> //скорректировать на TrackDto
 ): Response()
