@@ -1,14 +1,20 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.useCase.ThemeInteractor
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
+
+    private val themeInteractor: ThemeInteractor = Creator.provideThemeInteractor()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings2)
@@ -51,10 +57,10 @@ class SettingsActivity : AppCompatActivity() {
         }
     private fun setThemeSwitcher() {
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.selector)
-            themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        themeSwitcher.isChecked = themeInteractor.getCurrentTheme()
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            themeInteractor.switchTheme(checked)
         }
     }
     }
