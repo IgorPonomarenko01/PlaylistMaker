@@ -27,16 +27,9 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.SearchHistory
 import com.example.playlistmaker.TRACK_HISTORY_KEY
-import com.example.playlistmaker.data.network.ItunesApi
-import com.example.playlistmaker.data.dto.ItunesResponse
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.appbar.MaterialToolbar
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -48,14 +41,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryLayout: LinearLayout
     private lateinit var trackHistoryList: RecyclerView
     private lateinit var clearHistoryBtn: Button
-
-    private val iTunesbaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesbaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(ItunesApi::class.java)
 
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
@@ -238,59 +223,20 @@ class SearchActivity : AppCompatActivity() {
                         }
                     }
                 }
+
+                override fun onError(error: String) {
+                    runOnUiThread {
+                        progressBar.visibility = View.GONE
+                        showPlaceHolder(
+                            getString(R.string.no_connection),
+                            R.drawable.no_connection,
+                            true
+                        )
+                    }
+                }
             })
         }
     }
-
-
-//    private fun searchTracks(text: String) {
-//        if(text.isNotEmpty()) {
-//            placeHolderImage.visibility = View.GONE
-//            placeholderMessage.visibility = View.GONE
-//            refreshBtn.visibility = View.GONE
-//            trackList.visibility = View.GONE
-//            progressBar.visibility = View.VISIBLE
-//            iTunesService.search(text).enqueue(object : Callback<ItunesResponse> {
-//                override fun onResponse(call: Call<ItunesResponse>,
-//                                        response: Response<ItunesResponse>) {
-//                    progressBar.visibility = View.GONE
-//                    if(response.code() == 200) {
-//                        Log.d(TAG, "Sent text: $text Response is 200: ${response.code()}")
-//                        tracks.clear()
-//                        if(response.body()?.results?.isNotEmpty() == true) {
-//                            trackList.visibility = View.VISIBLE
-//                            Log.d(TAG, "Tracks got: ${response.body()?.results}")
-//                            tracks.addAll(response.body()?.results!!)
-//                            adapter.notifyDataSetChanged()
-//                            hideHistory()
-//                        } else {
-//                            showPlaceHolder(
-//                                getString(R.string.not_found),
-//                                R.drawable.empty_library,
-//                                false
-//                            )
-//                        }
-//                    } else {
-//                        Log.d(TAG, "Error: ${response.code()}")
-//                        showPlaceHolder(
-//                            getString(R.string.no_connection),
-//                            R.drawable.no_connection,
-//                            true
-//                        )
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-//                    Log.e(TAG, "Error:", t)
-//                    showPlaceHolder(
-//                        getString(R.string.no_connection),
-//                        R.drawable.no_connection,
-//                        true
-//                    )
-//                }
-//            })
-//        }
-//    }
 
     private fun showPlaceHolder(text: String, imageId: Int, showRefresh: Boolean) {
         progressBar.visibility = View.GONE

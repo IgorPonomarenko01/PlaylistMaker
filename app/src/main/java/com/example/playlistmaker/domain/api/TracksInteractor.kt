@@ -7,5 +7,7 @@ interface TracksInteractor {
 
     interface TracksConsumer {
         fun consume (foundTracks: List<Track>)
+
+        fun onError(error: String) = Unit
     }
 }
