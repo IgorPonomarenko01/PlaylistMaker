@@ -25,10 +25,10 @@ import com.example.playlistmaker.App
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.SearchHistory
-import com.example.playlistmaker.TRACK_HISTORY_KEY
+import com.example.playlistmaker.data.repository.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.useCase.SearchHistoryInteractor
 import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
@@ -45,8 +45,6 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var searchHistory: SearchHistory
-    private lateinit var sharedPrefs: SharedPreferences
     private lateinit var trackList: RecyclerView
     private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val searchRunnable = Runnable {
@@ -58,30 +56,32 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
     private lateinit var progressBar: ProgressBar
+    private lateinit var historyInteractor: SearchHistoryInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        searchHistory = (applicationContext as App).searchHistory
-        sharedPrefs = (applicationContext as App).sharedPrefs
+        historyInteractor = Creator.provideSearchHistoryInteractor()
+
 
         adapter = TrackAdapter(tracks) { clickedTrack ->
-            searchHistory.addTrackToHistory(clickedTrack)
+            historyInteractor.addToHistory(clickedTrack)
             playTrack(clickedTrack)
         }
 
         historyAdapter = TrackAdapter(ArrayList()) { clickedTrack ->
-            searchHistory.addTrackToHistory(clickedTrack)
+            historyInteractor.addToHistory(clickedTrack)
             playTrack(clickedTrack)
         }
 
         preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener{ _, key ->
-            if (key == TRACK_HISTORY_KEY) {
+            if (key == SearchHistoryRepositoryImpl.KEY_HISTORY) {
                 updateHistoryView()
             }
         }
-        (applicationContext as App).sharedPrefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
+        App.getSharedPreferences()
+            .registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
         trackList = findViewById(R.id.trackList)
         trackList.layoutManager = LinearLayoutManager(this)
@@ -122,7 +122,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryBtn.setOnClickListener {
-            searchHistory.clearHistory()
+            historyInteractor.clearHistory()
             updateHistoryView()
         }
 
@@ -261,7 +261,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateHistoryView() {
-        val historyTracks = searchHistory.getTrackHistory()
+        val historyTracks = historyInteractor.getHistory()
+        Log.d(TAG, "historyInteractor")
         if (searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
             historyAdapter.updateTracks(historyTracks)
             searchHistoryLayout.visibility = View.VISIBLE
@@ -310,6 +311,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sharedPrefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
+        App.getSharedPreferences()
+            .unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 }
