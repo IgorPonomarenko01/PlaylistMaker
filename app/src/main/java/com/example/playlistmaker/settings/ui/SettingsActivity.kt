@@ -4,30 +4,27 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.databinding.ActivitySettings2Binding
 import com.example.playlistmaker.settings.domain.ThemeInteractor
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySettings2Binding
     private val themeInteractor: ThemeInteractor = Creator.provideThemeInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings2)
+        binding = ActivitySettings2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
-
-        navBack.setNavigationOnClickListener {
+        binding.toolBar.setNavigationOnClickListener {
             finish()
         }
         setThemeSwitcher()
 
-        val shareLine = findViewById<MaterialTextView>(R.id.shareLine)
-        shareLine.setOnClickListener {
+        binding.shareLine.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.practicumLink))
@@ -35,9 +32,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(shareIntent)
         }
-
-        val supportLine = findViewById<MaterialTextView>(R.id.supportLine)
-        supportLine.setOnClickListener {
+        binding.supportLine.setOnClickListener {
             val sendIntent = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.supportEmail)))
@@ -46,20 +41,15 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(sendIntent)
         }
-
-        val agreementLine = findViewById<MaterialTextView>(R.id.agreementLine)
-        agreementLine.setOnClickListener {
+        binding.agreementLine.setOnClickListener {
             val browseIntent = Intent(Intent.ACTION_VIEW)
             browseIntent.data = Uri.parse(getString(R.string.agreementLink))
             startActivity(browseIntent)
         }
-
         }
     private fun setThemeSwitcher() {
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.selector)
-        themeSwitcher.isChecked = themeInteractor.getCurrentTheme()
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+        binding.selector.isChecked = themeInteractor.getCurrentTheme()
+        binding.selector.setOnCheckedChangeListener { switcher, checked ->
             themeInteractor.switchTheme(checked)
         }
     }

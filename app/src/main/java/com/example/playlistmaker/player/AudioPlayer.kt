@@ -4,27 +4,25 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
-import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.Utils
+import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.search.domain.Track
 import com.google.android.material.appbar.MaterialToolbar
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayer : AppCompatActivity() {
 
-    private lateinit var play: ImageView
+    private lateinit var binding: ActivityAudioPlayerBinding
     private var mediaPlayer = MediaPlayer()
     private lateinit var url: String
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var playTimeMillis: TextView
     private val playTimerRunnable = object : Runnable {
         override fun run() {
             updateTimer()
@@ -36,28 +34,15 @@ class AudioPlayer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_audio_player)
+        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
-
-        navBack.setNavigationOnClickListener {
+        binding.playerToolBar.setNavigationOnClickListener {
             finish()
         }
 
         val track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
         url = track.previewUrl
-
-        val trackImage = findViewById<ImageView>(R.id.trackImage)
-        val trackName = findViewById<TextView>(R.id.trackName)
-        val artistName = findViewById<TextView>(R.id.artistName)
-        val trackTime = findViewById<TextView>(R.id.trackTime)
-        val collectionName = findViewById<TextView>(R.id.collectionName)
-        val collectionNameText = findViewById<TextView>(R.id.collectionNameText)
-        val releaseDate = findViewById<TextView>(R.id.releaseDate)
-        val primaryGenreName = findViewById<TextView>(R.id.primaryGenreName)
-        val country = findViewById<TextView>(R.id.country)
-        playTimeMillis = findViewById(R.id.playTimeMillis)
-        play = findViewById(R.id.playBtn)
 
         preparePlayer()
 
@@ -65,21 +50,24 @@ class AudioPlayer : AppCompatActivity() {
             .load(track.getCoverArtWork())
             .transform(RoundedCorners(Utils.dpToPx(8f, this)))
             .placeholder(R.drawable.placeholder)
-            .into(trackImage)
-        trackName.text = track.trackName
-        artistName.text = track.artistName
-        trackTime.text = track.trackTime
-        if (track.collectionName.isNullOrEmpty()) {
-            collectionNameText.isVisible = false
-            collectionName.isVisible = false
-        } else {
-            collectionName.text = track.collectionName
+            .into(binding.trackImage)
+        binding.apply {
+            trackName.text = track.trackName
+            artistName.text = track.artistName
+            trackTime.text = track.trackTime
         }
-        releaseDate.text = track.releaseYear
-        primaryGenreName.text = track.primaryGenreName
-        country.text = track.country
-
-        play.setOnClickListener {
+        if (track.collectionName.isNullOrEmpty()) {
+            binding.collectionNameText.isVisible = false
+            binding.collectionName.isVisible = false
+        } else {
+            binding.collectionName.text = track.collectionName
+        }
+        binding.apply {
+            releaseDate.text = track.releaseYear
+            primaryGenreName.text = track.primaryGenreName
+            country.text = track.country
+        }
+        binding.playBtn.setOnClickListener {
             playbackControl()
         }
     }
@@ -118,27 +106,27 @@ class AudioPlayer : AppCompatActivity() {
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            play.isClickable = true
+            binding.playBtn.isClickable = true
             playerState = STATE_PREPARED
         }
         mediaPlayer.setOnCompletionListener {
             handler.removeCallbacks(playTimerRunnable)
-            play.setImageResource(R.drawable.play)
-            playTimeMillis.text = getString(R.string.trackTimeMillisDefault)
+            binding.playBtn.setImageResource(R.drawable.play)
+            binding.playTimeMillis.text = getString(R.string.trackTimeMillisDefault)
             playerState = STATE_PREPARED
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        play.setImageResource(R.drawable.pause)
+        binding.playBtn.setImageResource(R.drawable.pause)
         playerState = STATE_PLAYING
         handler.post(playTimerRunnable)
     }
 
     private fun pausePLayer() {
         mediaPlayer.pause()
-        play.setImageResource(R.drawable.play)
+        binding.playBtn.setImageResource(R.drawable.play)
         playerState = STATE_PAUSED
         handler.removeCallbacks(playTimerRunnable)
         updateTimer()
@@ -157,6 +145,6 @@ class AudioPlayer : AppCompatActivity() {
 
     private fun updateTimer() {
         val currentPosition = mediaPlayer.currentPosition
-        playTimeMillis.text = timeFormatter.format(currentPosition)
+        binding.playTimeMillis.text = timeFormatter.format(currentPosition)
     }
 }

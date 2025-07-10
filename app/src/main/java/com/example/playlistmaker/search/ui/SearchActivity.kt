@@ -25,6 +25,7 @@ import com.example.playlistmaker.App
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.Track
@@ -35,34 +36,26 @@ import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySearchBinding
     private var inputText: String = DEF_TEXT
-    private lateinit var searchInput: EditText
-    private lateinit var placeHolderImage: ImageView
-    private lateinit var placeholderMessage: TextView
-    private lateinit var refreshBtn: Button
-    private lateinit var searchHistoryLayout: LinearLayout
-    private lateinit var trackHistoryList: RecyclerView
-    private lateinit var clearHistoryBtn: Button
-
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var trackList: RecyclerView
     private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val searchRunnable = Runnable {
-        val currentText = searchInput.text.toString()
+        val currentText = binding.searchInput.text.toString()
         if (currentText.isNotEmpty()) {
             searchTracks(inputText)
         }
     }
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
-    private lateinit var progressBar: ProgressBar
     private lateinit var historyInteractor: SearchHistoryInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         historyInteractor = Creator.provideSearchHistoryInteractor()
 
@@ -85,51 +78,36 @@ class SearchActivity : AppCompatActivity() {
         App.getSharedPreferences()
             .registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
-        trackList = findViewById(R.id.trackList)
-        trackList.layoutManager = LinearLayoutManager(this)
-        trackList.adapter = adapter
-
-        trackHistoryList = findViewById(R.id.trackHistoryList)
-        trackHistoryList.layoutManager = LinearLayoutManager(this)
-        trackHistoryList.adapter = historyAdapter
-
-        placeHolderImage = findViewById(R.id.placeHolderImage)
-        placeholderMessage = findViewById(R.id.placeHolderMessage)
-        refreshBtn = findViewById(R.id.refreshBtn)
-        searchHistoryLayout = findViewById(R.id.searchHistoryLayout)
-        clearHistoryBtn = findViewById(R.id.clearHistoryBtn)
-        progressBar = findViewById(R.id.progressBar)
-
-        refreshBtn.setOnClickListener {
+        binding.trackList.layoutManager = LinearLayoutManager(this)
+        binding.trackList.adapter = adapter
+        binding.trackHistoryList.layoutManager = LinearLayoutManager(this)
+        binding.trackHistoryList.adapter = historyAdapter
+        binding.refreshBtn.setOnClickListener {
             hidePlaceholder()
-            searchTracks(searchInput.text.toString())
+            searchTracks(binding.searchInput.text.toString())
         }
 
-        val navBack = findViewById<MaterialToolbar>(R.id.tool_bar)
-
-        navBack.setNavigationOnClickListener {
+        binding.toolBar.setNavigationOnClickListener {
             finish()
         }
-        searchInput = findViewById(R.id.searchInput)
-        val searchInputClear = findViewById<ImageView>(R.id.searchInputClear)
 
-        searchInputClear.setOnClickListener {
-            searchInput.setText("")
+        binding.searchInputClear.setOnClickListener {
+            binding.searchInput.setText("")
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            inputMethodManager?.hideSoftInputFromWindow(binding.searchInput.windowToken, 0)
             hidePlaceholder()
             tracks.clear()
             adapter.notifyDataSetChanged()
             showHistoryIfEmpty()
         }
 
-        clearHistoryBtn.setOnClickListener {
+        binding.clearHistoryBtn.setOnClickListener {
             historyInteractor.clearHistory()
             updateHistoryView()
         }
 
-        searchInput.setOnFocusChangeListener{ _, hasFocus ->
-            if(hasFocus && searchInput.text.isNullOrEmpty()) {
+        binding.searchInput.setOnFocusChangeListener{ _, hasFocus ->
+            if(hasFocus && binding.searchInput.text.isNullOrEmpty()) {
                 updateHistoryView()
             } else {
                 hideHistory()
@@ -142,8 +120,8 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchInputClear.visibility = inputClearVisibility(s)
-                inputText = searchInput.text.toString()
+                binding.searchInputClear.visibility = inputClearVisibility(s)
+                inputText = binding.searchInput.text.toString()
                 searchDebounce()
                if(s.isNullOrEmpty()) {
                     showHistoryIfEmpty()
@@ -156,11 +134,11 @@ class SearchActivity : AppCompatActivity() {
 
         }
 
-        searchInput.addTextChangedListener(searchInputTextWatcher)
+        binding.searchInput.addTextChangedListener(searchInputTextWatcher)
 
-        searchInput.setOnEditorActionListener { _, actionId, _, ->
+        binding.searchInput.setOnEditorActionListener { _, actionId, _, ->
             if(actionId == EditorInfo.IME_ACTION_DONE) {
-            val text = searchInput.text.toString()
+            val text = binding.searchInput.text.toString()
             searchTracks(text)
                 true
             }
@@ -184,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
-        searchInput.setText(inputText)
+        binding.searchInput.setText(inputText)
     }
 
     companion object {
@@ -199,20 +177,20 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchTracks(text: String) {
         if (text.isNotEmpty()) {
-            placeHolderImage.visibility = View.GONE
-            placeholderMessage.visibility = View.GONE
-            refreshBtn.visibility = View.GONE
-            trackList.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+            binding.placeHolderImage.visibility = View.GONE
+            binding.placeHolderMessage.visibility = View.GONE
+            binding.refreshBtn.visibility = View.GONE
+            binding.trackList.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
 
             trackInteractor.searchTracks(text, object : TracksInteractor.TracksConsumer {
                 override fun consume(foundTracks: List<Track>) {
                     this@SearchActivity.runOnUiThread {
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         tracks.clear()
 
                         if (foundTracks.isNotEmpty()) {
-                            trackList.visibility = View.VISIBLE
+                            binding.trackList.visibility = View.VISIBLE
                             tracks.addAll(foundTracks)
                             adapter.notifyDataSetChanged()
                             hideHistory()
@@ -228,7 +206,7 @@ class SearchActivity : AppCompatActivity() {
 
                 override fun onError(error: String) {
                     runOnUiThread {
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         showPlaceHolder(
                             getString(R.string.no_connection),
                             R.drawable.no_connection,
@@ -241,14 +219,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showPlaceHolder(text: String, imageId: Int, showRefresh: Boolean) {
-        progressBar.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
         if (text.isNotEmpty()) {
-            placeHolderImage.setImageResource(imageId)
-            placeholderMessage.text = text
+            binding.placeHolderImage.setImageResource(imageId)
+            binding.placeHolderMessage.text = text
 
-            placeHolderImage.visibility = View.VISIBLE
-            placeholderMessage.visibility = View.VISIBLE
-            refreshBtn.visibility = if (showRefresh) View.VISIBLE else View.GONE
+            binding.placeHolderImage.visibility = View.VISIBLE
+            binding.placeHolderMessage.visibility = View.VISIBLE
+            binding.refreshBtn.visibility = if (showRefresh) View.VISIBLE else View.GONE
 
             tracks.clear()
             adapter.notifyDataSetChanged()
@@ -257,18 +235,18 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun hidePlaceholder() {
-        placeHolderImage.visibility = View.GONE
-        placeholderMessage.visibility = View.GONE
-        refreshBtn.visibility = View.GONE
+        binding.placeHolderImage.visibility = View.GONE
+        binding.placeHolderMessage.visibility = View.GONE
+        binding.refreshBtn.visibility = View.GONE
     }
 
     private fun updateHistoryView() {
         val historyTracks = historyInteractor.getHistory()
         Log.d(TAG, "historyInteractor")
-        if (searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
+        if (binding.searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
             historyAdapter.updateTracks(historyTracks)
-            searchHistoryLayout.visibility = View.VISIBLE
-            trackList.visibility = View.GONE
+            binding.searchHistoryLayout.visibility = View.VISIBLE
+            binding.trackList.visibility = View.GONE
             hidePlaceholder()
         } else {
             hideHistory()
@@ -276,15 +254,15 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistoryIfEmpty() {
-        if (searchInput.text.isNullOrEmpty()) {
+        if (binding.searchInput.text.isNullOrEmpty()) {
             updateHistoryView()
         } else {
             hideHistory()
         }
     }
     private fun hideHistory() {
-        searchHistoryLayout.visibility = View.GONE
-        trackList.visibility = View.VISIBLE
+        binding.searchHistoryLayout.visibility = View.GONE
+        binding.trackList.visibility = View.VISIBLE
     }
 
     private fun playTrack(track: Track) {
