@@ -2,8 +2,8 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.useCase.ThemeInteractor
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.settings.domain.ThemeInteractor
 
 const val SHARED_PREFS = "shared_prefs"
 
