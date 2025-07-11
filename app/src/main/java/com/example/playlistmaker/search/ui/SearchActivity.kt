@@ -12,15 +12,8 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.App
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.creator.Creator
@@ -30,9 +23,8 @@ import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.SearchHistoryInteractor
-import com.example.playlistmaker.player.AudioPlayer
+import com.example.playlistmaker.player.ui.AudioPlayer
 import com.example.playlistmaker.search.domain.TrackAdapter
-import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
 
