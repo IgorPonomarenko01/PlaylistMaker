@@ -12,18 +12,16 @@ import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
 
-class SearchViewModel(
-    private val trackInteractor: TracksInteractor,
-    private val historyInteractor: SearchHistoryInteractor
-) : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
+    private val trackInteractor = Creator.provideTracksInteractor()
+    private val historyInteractor = Creator.provideSearchHistoryInteractor()
+
     private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
 
     private val _searchState = MutableLiveData<SearchState>()
     val searchState: LiveData<SearchState> = _searchState
@@ -70,15 +68,6 @@ class SearchViewModel(
                 _searchState.postValue(SearchState.Error(error))
             }
         })
-    }
-
-    fun clickDebounce(): Boolean {
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-            return true
-        }
-        return false
     }
 
     override fun onCleared() {

@@ -22,10 +22,8 @@ import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayer
 import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
-import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.domain.TracksInteractor
 
 class SearchActivity : AppCompatActivity() {
 
@@ -37,19 +35,15 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter : TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
+    private val handler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModelFactory(
-                Creator.provideTracksInteractor(),
-                Creator.provideSearchHistoryInteractor()
-            )
-        )[SearchViewModel::class.java]
+        viewModel = SearchViewModel()
 
         viewModel.historyState.observe(this) { historyTracks ->
             if (binding.searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
@@ -193,23 +187,10 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(INPUT_TEXT, inputText)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        inputText = savedInstanceState.getString(INPUT_TEXT, DEF_TEXT)
-        binding.searchInput.setText(inputText)
-    }
-
     companion object {
         private const val INPUT_TEXT = "INPUT_TEXT"
         private const val DEF_TEXT = ""
         private const val TAG = "SEARCH_TEST"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
@@ -252,12 +233,22 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun playTrack(track: Track) {
-        if (viewModel.clickDebounce()) {
+        if (clickDebounce()) {
             val playerIntent = Intent(this, AudioPlayer::class.java).apply {
                 putExtra(Constants.TRACK_KEY, track)
             }
             startActivity(playerIntent)
         }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        Log.d(TAG, "Click allowed: $current")
+        return current
     }
 
     override fun onDestroy() {
