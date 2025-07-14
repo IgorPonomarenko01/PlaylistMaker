@@ -51,28 +51,28 @@ class AudioPlayerViewModel(private val url: String,
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            _playBtnClickable.value = true
-            _playerState.value = STATE_PREPARED
+            _playBtnClickable.postValue(true)
+            _playerState.postValue(STATE_PREPARED)
         }
         mediaPlayer.setOnCompletionListener {
             handler.removeCallbacks(playTimerRunnable)
-            _playBtnsRes.value = R.drawable.play
-            _currentPosition.value = trackTimeMillisDefault
-            _playerState.value = STATE_PREPARED
+            _playBtnsRes.postValue( R.drawable.play)
+            _currentPosition.postValue(trackTimeMillisDefault)
+            _playerState.postValue(STATE_PREPARED)
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        _playBtnsRes.value = R.drawable.pause
-        _playerState.value = STATE_PLAYING
+        _playBtnsRes.postValue(R.drawable.pause)
+        _playerState.postValue(STATE_PLAYING)
         handler.post(playTimerRunnable)
     }
 
     fun pausePLayer() {
         mediaPlayer.pause()
-        _playBtnsRes.value = R.drawable.play
-        _playerState.value = STATE_PAUSED
+        _playBtnsRes.postValue(R.drawable.play)
+        _playerState.postValue(STATE_PAUSED)
         handler.removeCallbacks(playTimerRunnable)
         updateTimer()
     }
@@ -91,7 +91,7 @@ class AudioPlayerViewModel(private val url: String,
 
     private fun updateTimer() {
         val currentPosition = mediaPlayer.currentPosition
-        _currentPosition.value = timeFormatter.format(currentPosition)
+        _currentPosition.postValue(timeFormatter.format(currentPosition))
     }
 
     override fun onCleared() {

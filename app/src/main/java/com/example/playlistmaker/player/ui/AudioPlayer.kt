@@ -16,7 +16,6 @@ class AudioPlayer : AppCompatActivity() {
 
     private lateinit var viewModel: AudioPlayerViewModel
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +28,6 @@ class AudioPlayer : AppCompatActivity() {
 
         val trackTimeMillisDefault = getString(R.string.trackTimeMillisDefault)
         val track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
-        url = track.previewUrl
 
         viewModel = ViewModelProvider(
             this,

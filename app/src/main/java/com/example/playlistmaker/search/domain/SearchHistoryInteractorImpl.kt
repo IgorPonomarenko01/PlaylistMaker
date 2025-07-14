@@ -1,5 +1,7 @@
 package com.example.playlistmaker.search.domain
 
+import android.util.Log
+
 class SearchHistoryInteractorImpl(
     private val repository: SearchHistoryRepository
 ) : SearchHistoryInteractor {
