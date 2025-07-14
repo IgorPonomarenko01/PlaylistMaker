@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.App
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayer
 import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
+import com.example.playlistmaker.settings.ui.SettingsViewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -43,7 +43,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = SearchViewModel()
+        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
         viewModel.historyState.observe(this) { historyTracks ->
             if (binding.searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {

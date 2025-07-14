@@ -18,7 +18,7 @@ import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.settings.domain.ThemeInteractor
 import com.example.playlistmaker.sharing.domain.EmailData
 import com.example.playlistmaker.sharing.domain.ExternalNavigator
-import com.example.playlistmaker.sharing.domain.ExternalNavigatorImpl
+import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.SharingInteractorImpl
 import com.google.gson.Gson

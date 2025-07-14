@@ -7,10 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
+import com.example.playlistmaker.search.domain.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AudioPlayerViewModel(private val url: String,
+class AudioPlayerViewModel(private val track: Track,
     private val trackTimeMillisDefault: String) : ViewModel() {
 
     companion object {
@@ -23,6 +24,9 @@ class AudioPlayerViewModel(private val url: String,
 
     private val mediaPlayer = MediaPlayer()
     private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
+
+    private val _trackData = MutableLiveData<Track>()
+    val trackData: LiveData<Track> = _trackData
     private val _playerState = MutableLiveData<Int>(STATE_DEFAULT)
     val playerState: LiveData<Int> = _playerState
 
@@ -44,11 +48,12 @@ class AudioPlayerViewModel(private val url: String,
     }
 
     init {
+        _trackData.value = track
         preparePlayer()
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
+        mediaPlayer.setDataSource(track.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             _playBtnClickable.postValue(true)

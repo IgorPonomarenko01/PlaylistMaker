@@ -31,37 +31,39 @@ class AudioPlayer : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            AudioPlayerViewModelFactory(track.previewUrl, trackTimeMillisDefault)
+            AudioPlayerViewModelFactory(track, trackTimeMillisDefault)
         ).get(
             AudioPlayerViewModel::class.java
         )
 
-        setupUi(track)
+        setupUi()
         setupObservers()
         setupClickListeners()
     }
 
-    private fun setupUi(track: Track) {
-        Glide.with(this)
-            .load(track.getCoverArtWork())
-            .transform(RoundedCorners(Utils.dpToPx(8f, this)))
-            .placeholder(R.drawable.placeholder)
-            .into(binding.trackImage)
-        binding.apply {
-            trackName.text = track.trackName
-            artistName.text = track.artistName
-            trackTime.text = track.trackTime
-        }
-        if (track.collectionName.isNullOrEmpty()) {
-            binding.collectionNameText.isVisible = false
-            binding.collectionName.isVisible = false
-        } else {
-            binding.collectionName.text = track.collectionName
-        }
-        binding.apply {
-            releaseDate.text = track.releaseYear
-            primaryGenreName.text = track.primaryGenreName
-            country.text = track.country
+    private fun setupUi() {
+        viewModel.trackData.observe(this) { track ->
+            Glide.with(this)
+                .load(track.getCoverArtWork())
+                .transform(RoundedCorners(Utils.dpToPx(8f, this)))
+                .placeholder(R.drawable.placeholder)
+                .into(binding.trackImage)
+            binding.apply {
+                trackName.text = track.trackName
+                artistName.text = track.artistName
+                trackTime.text = track.trackTime
+            }
+            if (track.collectionName.isNullOrEmpty()) {
+                binding.collectionNameText.isVisible = false
+                binding.collectionName.isVisible = false
+            } else {
+                binding.collectionName.text = track.collectionName
+            }
+            binding.apply {
+                releaseDate.text = track.releaseYear
+                primaryGenreName.text = track.primaryGenreName
+                country.text = track.country
+            }
         }
     }
 
