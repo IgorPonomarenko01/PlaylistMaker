@@ -34,7 +34,6 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
@@ -103,14 +102,6 @@ class SearchActivity : AppCompatActivity() {
             viewModel.addToHistory(clickedTrack)
             playTrack(clickedTrack)
         }
-
-        preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener{ _, key ->
-            if (key == SearchHistoryRepositoryImpl.KEY_HISTORY) {
-                updateHistoryView()
-            }
-        }
-        App.getSharedPreferences()
-            .registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
         binding.trackList.layoutManager = LinearLayoutManager(this)
         binding.trackList.adapter = adapter
@@ -253,7 +244,5 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        App.getSharedPreferences()
-            .unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 }

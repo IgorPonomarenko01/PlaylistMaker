@@ -33,6 +33,12 @@ class SearchViewModel : ViewModel() {
     private val searchRunnable = Runnable {
         searchTracks(inputText)
     }
+
+    init {
+        historyInteractor.registerHistoryListener { history ->
+            _historyState.postValue(history)
+        }
+    }
     fun searchDebounce(text: String) {
         inputText = text
         handler.removeCallbacks(searchRunnable)
@@ -73,6 +79,7 @@ class SearchViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
+        historyInteractor.unregisterHistoryListener { _historyState.postValue(it) }
     }
 
 }
