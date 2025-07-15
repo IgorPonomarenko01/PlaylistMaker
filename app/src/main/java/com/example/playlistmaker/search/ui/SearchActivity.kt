@@ -2,28 +2,21 @@ package com.example.playlistmaker.search.ui
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.App
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayer
-import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.settings.ui.SettingsViewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -34,8 +27,6 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
-    private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -179,10 +170,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
     companion object {
-        private const val INPUT_TEXT = "INPUT_TEXT"
         private const val DEF_TEXT = ""
-        private const val TAG = "SEARCH_TEST"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     private fun showPlaceHolder(text: String, imageId: Int, showRefresh: Boolean) {
@@ -224,22 +212,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun playTrack(track: Track) {
-        if (clickDebounce()) {
+        if (viewModel.clickDebounce()) {
             val playerIntent = Intent(this, AudioPlayer::class.java).apply {
                 putExtra(Constants.TRACK_KEY, track)
             }
             startActivity(playerIntent)
         }
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        Log.d(TAG, "Click allowed: $current")
-        return current
     }
 
     override fun onDestroy() {

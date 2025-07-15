@@ -2,12 +2,10 @@ package com.example.playlistmaker.search.ui
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
@@ -16,13 +14,14 @@ class SearchViewModel : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     private val trackInteractor = Creator.provideTracksInteractor()
     private val historyInteractor = Creator.provideSearchHistoryInteractor()
 
     private val handler = Handler(Looper.getMainLooper())
-
+    private var isClickAllowed = true
     private val _searchState = MutableLiveData<SearchState>()
     val searchState: LiveData<SearchState> = _searchState
 
@@ -38,6 +37,15 @@ class SearchViewModel : ViewModel() {
         historyInteractor.registerHistoryListener { history ->
             _historyState.postValue(history)
         }
+    }
+
+    fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
     fun searchDebounce(text: String) {
         inputText = text
