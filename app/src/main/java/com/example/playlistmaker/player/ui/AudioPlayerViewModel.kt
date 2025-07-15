@@ -3,10 +3,13 @@ package com.example.playlistmaker.player.ui
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
+import com.example.playlistmaker.player.domain.AudioPlayerState
+import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -15,30 +18,11 @@ class AudioPlayerViewModel(private val track: Track,
     private val trackTimeMillisDefault: String) : ViewModel() {
 
     companion object {
-         const val STATE_DEFAULT = 0
-         const val STATE_PREPARED = 1
-         const val STATE_PLAYING = 2
-         const val STATE_PAUSED = 3
          const val REFRESH_CURRENT_POSITION = 300L
     }
 
     private val mediaPlayer = MediaPlayer()
     private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
-
-    private val _trackData = MutableLiveData<Track>()
-    val trackData: LiveData<Track> = _trackData
-    private val _playerState = MutableLiveData<Int>(STATE_DEFAULT)
-    val playerState: LiveData<Int> = _playerState
-
-    private val _currentPosition = MutableLiveData<String>()
-    val currentPosition: LiveData<String> = _currentPosition
-
-    private val _playBtnClickable = MutableLiveData<Boolean>()
-    val playBtnClickable: LiveData<Boolean> = _playBtnClickable
-
-    private val _playBtnsRes = MutableLiveData<Int>()
-    val playBtnsRes: LiveData<Int> = _playBtnsRes
-
     private val handler = Handler(Looper.getMainLooper())
     private val playTimerRunnable = object : Runnable {
         override fun run() {
@@ -47,8 +31,15 @@ class AudioPlayerViewModel(private val track: Track,
         }
     }
 
+    private val _playerState = MutableLiveData<AudioPlayerState>()
+    val playerState: LiveData<AudioPlayerState> = _playerState
+
     init {
-        _trackData.value = track
+        _playerState.value = AudioPlayerState(
+            track = track,
+            currentPosition = trackTimeMillisDefault,
+            playerStatus = PlayerStatus.DEFAULT
+        )
         preparePlayer()
     }
 
@@ -56,47 +47,69 @@ class AudioPlayerViewModel(private val track: Track,
         mediaPlayer.setDataSource(track.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            _playBtnClickable.postValue(true)
-            _playerState.postValue(STATE_PREPARED)
+            _playerState.postValue(
+                _playerState.value?.copy(
+                    playerStatus = PlayerStatus.PREPARED
+                )
+            )
         }
         mediaPlayer.setOnCompletionListener {
             handler.removeCallbacks(playTimerRunnable)
-            _playBtnsRes.postValue( R.drawable.play)
-            _currentPosition.postValue(trackTimeMillisDefault)
-            _playerState.postValue(STATE_PREPARED)
+            _playerState.postValue(
+                _playerState.value?.copy(
+                    playerStatus = PlayerStatus.PREPARED,
+                    currentPosition = trackTimeMillisDefault
+                )
+            )
         }
     }
 
     private fun startPlayer() {
         mediaPlayer.start()
-        _playBtnsRes.postValue(R.drawable.pause)
-        _playerState.postValue(STATE_PLAYING)
+        _playerState.value = _playerState.value?.copy(
+            playerStatus = PlayerStatus.PLAYING
+        )
         handler.post(playTimerRunnable)
     }
 
-    fun pausePLayer() {
+    fun pausePlayer() {
         mediaPlayer.pause()
-        _playBtnsRes.postValue(R.drawable.play)
-        _playerState.postValue(STATE_PAUSED)
+        _playerState.value = _playerState.value?.copy(
+            playerStatus = PlayerStatus.PAUSED
+        )
+        Log.d("DB_VM pausePlayer", "do pausePlayer ${_playerState.value?.playerStatus}")
         handler.removeCallbacks(playTimerRunnable)
         updateTimer()
     }
 
     fun playbackControl() {
-        when (_playerState.value) {
-            STATE_PLAYING -> {
-                pausePLayer()
+        Log.d("DB_VM playbackControl", "playbackControl with status ${_playerState.value?.playerStatus}")
+        when (_playerState.value?.playerStatus) {
+            PlayerStatus.PLAYING -> {
+                Log.d("DB_VM playbackControl", "do pausePlayer")
+                pausePlayer()
             }
-
-            STATE_PREPARED, STATE_PAUSED -> {
+            PlayerStatus.PREPARED, PlayerStatus.PAUSED -> {
+                Log.d("DB_VM playbackControl", "do startPlayer")
                 startPlayer()
+            }
+            PlayerStatus.DEFAULT -> {
+                Log.w("AudioPlayer", "Player is not ready yet")
+            }
+            null -> {
+                Log.e("AudioPlayer", "Player state is null")
+                _playerState.value = AudioPlayerState(
+                    track = track,
+                    currentPosition = trackTimeMillisDefault,
+                    playerStatus = PlayerStatus.DEFAULT
+                )
             }
         }
     }
 
     private fun updateTimer() {
-        val currentPosition = mediaPlayer.currentPosition
-        _currentPosition.postValue(timeFormatter.format(currentPosition))
+        val newPosition = timeFormatter.format(mediaPlayer.currentPosition)
+        _playerState.postValue(_playerState.value?.copy(currentPosition = newPosition))
     }
 
     override fun onCleared() {

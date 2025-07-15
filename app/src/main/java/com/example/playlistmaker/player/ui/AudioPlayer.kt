@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +11,8 @@ import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Utils
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.player.domain.AudioPlayerState
+import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
 
 class AudioPlayer : AppCompatActivity() {
@@ -36,55 +39,56 @@ class AudioPlayer : AppCompatActivity() {
             AudioPlayerViewModel::class.java
         )
 
-        setupUi()
         setupObservers()
         setupClickListeners()
     }
 
-    private fun setupUi() {
-        viewModel.trackData.observe(this) { track ->
-            Glide.with(this)
-                .load(track.getCoverArtWork())
-                .transform(RoundedCorners(Utils.dpToPx(8f, this)))
+
+    private fun renderPlayerState(state: AudioPlayerState) {
+
+        with(binding) {
+            Glide.with(this@AudioPlayer)
+                .load(state.track.getCoverArtWork())
+                .transform(RoundedCorners(Utils.dpToPx(8f, this@AudioPlayer)))
                 .placeholder(R.drawable.placeholder)
-                .into(binding.trackImage)
-            binding.apply {
-                trackName.text = track.trackName
-                artistName.text = track.artistName
-                trackTime.text = track.trackTime
-            }
-            if (track.collectionName.isNullOrEmpty()) {
-                binding.collectionNameText.isVisible = false
-                binding.collectionName.isVisible = false
+                .into(trackImage)
+
+            trackName.text = state.track.trackName
+            artistName.text = state.track.artistName
+            trackTime.text = state.track.trackTime
+
+            if (state.track.collectionName.isNullOrEmpty()) {
+                collectionNameText.isVisible = false
+                collectionName.isVisible = false
             } else {
-                binding.collectionName.text = track.collectionName
+                collectionName.text = state.track.collectionName
             }
-            binding.apply {
-                releaseDate.text = track.releaseYear
-                primaryGenreName.text = track.primaryGenreName
-                country.text = track.country
-            }
+
+            releaseDate.text = state.track.releaseYear
+            primaryGenreName.text = state.track.primaryGenreName
+            country.text = state.track.country
+
+            playTimeMillis.text = state.currentPosition
+            playBtn.setImageResource(
+                when (state.playerStatus) {
+                    PlayerStatus.PLAYING -> R.drawable.pause
+                    else -> R.drawable.play
+                }
+            )
+            playBtn.isClickable = state.playerStatus != PlayerStatus.DEFAULT
         }
     }
 
     private fun setupObservers() {
-        viewModel.playBtnsRes.observe(this) { resId ->
-            binding.playBtn.setImageResource(resId)
-        }
-
-        viewModel.currentPosition.observe(this) { position ->
-            binding.playTimeMillis.text = position
-
-        }
-
-        viewModel.playBtnClickable.observe(this) { isClickable ->
-            binding.playBtn.isClickable = isClickable
-
+        viewModel.playerState.observe(this) { state ->
+            Log.d("DB_AUD ACT", "viewModel.playerState = ${viewModel.playerState.value?.playerStatus}")
+            renderPlayerState(state)
         }
     }
 
     private fun setupClickListeners() {
         binding.playBtn.setOnClickListener {
+            Log.d("DB_AUD click listener", "clicked")
             viewModel.playbackControl()
         }
     }
@@ -92,14 +96,14 @@ class AudioPlayer : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (isFinishing || !isChangingConfigurations) {
-            viewModel.pausePLayer()
+            viewModel.pausePlayer()
         }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus && viewModel.playerState.value == AudioPlayerViewModel.STATE_PLAYING) {
-            viewModel.pausePLayer()
+        if (!hasFocus && viewModel.playerState.value?.playerStatus == PlayerStatus.PLAYING) {
+            viewModel.pausePlayer()
         }
     }
 }
