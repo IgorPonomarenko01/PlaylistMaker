@@ -3,6 +3,10 @@ package com.example.playlistmaker.creator
 import android.content.Context
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.player.data.PlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.PlayerInteractorImpl
+import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.search.data.TracksRepositoryImpl
 import com.example.playlistmaker.search.data.RetrofitNetworkClient
 import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
@@ -22,6 +26,8 @@ import com.example.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 import com.example.playlistmaker.sharing.domain.SharingInteractorImpl
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 object Creator {
     private fun getTracksRepository() : TracksRepository {
@@ -63,5 +69,15 @@ object Creator {
 
     private fun provideExternalNavigator(context: Context): ExternalNavigator {
         return ExternalNavigatorImpl(context.applicationContext)
+    }
+
+    private fun getPlayerRepository(): PlayerRepository {
+        return PlayerRepositoryImpl()
+    }
+
+    fun providePlayerInteractor(): PlayerInteractor {
+        return PlayerInteractorImpl(
+            playerRepository = getPlayerRepository()
+        )
     }
 }

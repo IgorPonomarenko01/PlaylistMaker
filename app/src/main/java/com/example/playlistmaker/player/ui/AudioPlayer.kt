@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -81,14 +80,12 @@ class AudioPlayer : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.playerState.observe(this) { state ->
-            Log.d("DB_AUD ACT", "viewModel.playerState = ${viewModel.playerState.value?.playerStatus}")
             renderPlayerState(state)
         }
     }
 
     private fun setupClickListeners() {
         binding.playBtn.setOnClickListener {
-            Log.d("DB_AUD click listener", "clicked")
             viewModel.playbackControl()
         }
     }

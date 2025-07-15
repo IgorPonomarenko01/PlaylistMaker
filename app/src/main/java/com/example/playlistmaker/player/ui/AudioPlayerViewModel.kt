@@ -1,13 +1,12 @@
 package com.example.playlistmaker.player.ui
 
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.AudioPlayerState
 import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
@@ -21,7 +20,7 @@ class AudioPlayerViewModel(private val track: Track,
          const val REFRESH_CURRENT_POSITION = 300L
     }
 
-    private val mediaPlayer = MediaPlayer()
+    private val playerInteractor = Creator.providePlayerInteractor()
     private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
     private val handler = Handler(Looper.getMainLooper())
     private val playTimerRunnable = object : Runnable {
@@ -44,28 +43,29 @@ class AudioPlayerViewModel(private val track: Track,
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            _playerState.postValue(
-                _playerState.value?.copy(
-                    playerStatus = PlayerStatus.PREPARED
+        playerInteractor.prepare(
+            track = track,
+            onPrepared = {
+                _playerState.postValue(
+                    _playerState.value?.copy(
+                        playerStatus = PlayerStatus.PREPARED
+                    )
                 )
-            )
-        }
-        mediaPlayer.setOnCompletionListener {
-            handler.removeCallbacks(playTimerRunnable)
-            _playerState.postValue(
-                _playerState.value?.copy(
-                    playerStatus = PlayerStatus.PREPARED,
-                    currentPosition = trackTimeMillisDefault
+            },
+            onCompletion = {
+                handler.removeCallbacks(playTimerRunnable)
+                _playerState.postValue(
+                    _playerState.value?.copy(
+                        playerStatus = PlayerStatus.PREPARED,
+                        currentPosition = trackTimeMillisDefault
+                    )
                 )
-            )
-        }
+            }
+        )
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
+        playerInteractor.play()
         _playerState.value = _playerState.value?.copy(
             playerStatus = PlayerStatus.PLAYING
         )
@@ -73,24 +73,20 @@ class AudioPlayerViewModel(private val track: Track,
     }
 
     fun pausePlayer() {
-        mediaPlayer.pause()
+        playerInteractor.pause()
         _playerState.value = _playerState.value?.copy(
             playerStatus = PlayerStatus.PAUSED
         )
-        Log.d("DB_VM pausePlayer", "do pausePlayer ${_playerState.value?.playerStatus}")
         handler.removeCallbacks(playTimerRunnable)
         updateTimer()
     }
 
     fun playbackControl() {
-        Log.d("DB_VM playbackControl", "playbackControl with status ${_playerState.value?.playerStatus}")
         when (_playerState.value?.playerStatus) {
             PlayerStatus.PLAYING -> {
-                Log.d("DB_VM playbackControl", "do pausePlayer")
                 pausePlayer()
             }
             PlayerStatus.PREPARED, PlayerStatus.PAUSED -> {
-                Log.d("DB_VM playbackControl", "do startPlayer")
                 startPlayer()
             }
             PlayerStatus.DEFAULT -> {
@@ -108,14 +104,14 @@ class AudioPlayerViewModel(private val track: Track,
     }
 
     private fun updateTimer() {
-        val newPosition = timeFormatter.format(mediaPlayer.currentPosition)
+        val newPosition = timeFormatter.format(playerInteractor.getCurrentPosition())
         _playerState.postValue(_playerState.value?.copy(currentPosition = newPosition))
     }
 
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacks(playTimerRunnable)
-        mediaPlayer.release()
+        playerInteractor.release()
     }
 
 }
