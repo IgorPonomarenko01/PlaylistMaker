@@ -1,18 +1,8 @@
 package com.example.playlistmaker.search.data
 
 import okio.IOException
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient : NetworkClient {
-
-    private val iTunesbaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesbaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(ItunesApi::class.java)
+class RetrofitNetworkClient(private val iTunesService: ItunesApi) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         return try {

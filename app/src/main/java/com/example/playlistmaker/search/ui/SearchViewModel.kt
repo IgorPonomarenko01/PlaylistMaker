@@ -5,20 +5,20 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(
+    private val trackInteractor: TracksInteractor,
+    private val historyInteractor: SearchHistoryInteractor
+) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
-
-    private val trackInteractor = Creator.provideTracksInteractor()
-    private val historyInteractor = Creator.provideSearchHistoryInteractor()
 
     private val handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
@@ -32,11 +32,12 @@ class SearchViewModel : ViewModel() {
     private val searchRunnable = Runnable {
         searchTracks(inputText)
     }
+    private val historyListener: (List<Track>) -> Unit = { history ->
+        _historyState.postValue(history)
+    }
 
     init {
-        historyInteractor.registerHistoryListener { history ->
-            _historyState.postValue(history)
-        }
+        historyInteractor.registerHistoryListener(historyListener)
     }
 
     fun clickDebounce(): Boolean {
@@ -87,7 +88,7 @@ class SearchViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
-        historyInteractor.unregisterHistoryListener { _historyState.postValue(it) }
+        historyInteractor.unregisterHistoryListener(historyListener)
     }
 
 }

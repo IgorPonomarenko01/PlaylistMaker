@@ -1,9 +1,8 @@
 package com.example.playlistmaker.search.data
 
 import android.content.SharedPreferences
-import android.util.Log
-import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.SearchHistoryRepository
+import com.example.playlistmaker.search.domain.Track
 import com.google.gson.Gson
 
 class SearchHistoryRepositoryImpl(
@@ -18,11 +17,11 @@ class SearchHistoryRepositoryImpl(
 
     private val listeners = mutableListOf<(List<Track>) -> Unit>()
 
-    fun registerListener(listener: (List<Track>) -> Unit) {
+    override fun registerListener(listener: (List<Track>) -> Unit) {
         listeners.add(listener)
     }
 
-    fun unregisterListener(listener: (List<Track>) -> Unit) {
+    override fun unregisterListener(listener: (List<Track>) -> Unit) {
         listeners.remove(listener)
     }
 

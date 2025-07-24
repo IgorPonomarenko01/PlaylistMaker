@@ -9,7 +9,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
@@ -17,12 +16,11 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayer
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
-
+    private val viewModel: SearchViewModel by viewModel()
     private var inputText: String = DEF_TEXT
     private val tracks = ArrayList<Track>()
     private lateinit var adapter : TrackAdapter
@@ -32,8 +30,6 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
         viewModel.historyState.observe(this) { historyTracks ->
             if (binding.searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {

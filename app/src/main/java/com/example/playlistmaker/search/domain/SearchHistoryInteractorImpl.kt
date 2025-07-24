@@ -1,8 +1,5 @@
 package com.example.playlistmaker.search.domain
 
-import android.util.Log
-import com.example.playlistmaker.search.data.SearchHistoryRepositoryImpl
-
 class SearchHistoryInteractorImpl(
     private val repository: SearchHistoryRepository
 ) : SearchHistoryInteractor {
@@ -19,10 +16,10 @@ class SearchHistoryInteractorImpl(
         repository.clearHistory()
     }
     override fun registerHistoryListener(listener: (List<Track>) -> Unit) {
-        (repository as SearchHistoryRepositoryImpl).registerListener(listener)
+        repository.registerListener(listener)
     }
 
     override fun unregisterHistoryListener(listener: (List<Track>) -> Unit) {
-        (repository as SearchHistoryRepositoryImpl).unregisterListener(listener)
+        repository.unregisterListener(listener)
     }
 }
