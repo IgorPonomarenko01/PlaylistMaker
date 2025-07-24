@@ -6,21 +6,22 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.AudioPlayerState
+import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerViewModel(private val track: Track,
-    private val trackTimeMillisDefault: String) : ViewModel() {
+                           private val trackTimeMillisDefault: String,
+                           private val playerInteractor: PlayerInteractor
+) : ViewModel() {
 
     companion object {
          const val REFRESH_CURRENT_POSITION = 300L
     }
 
-    private val playerInteractor = Creator.providePlayerInteractor()
     private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault())
     private val handler = Handler(Looper.getMainLooper())
     private val playTimerRunnable = object : Runnable {

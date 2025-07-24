@@ -1,38 +1,31 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import android.content.SharedPreferences
-import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.di.dataModule
+import com.example.playlistmaker.di.interactorModule
+import com.example.playlistmaker.di.repositoryModule
+import com.example.playlistmaker.di.viewModelModule
 import com.example.playlistmaker.settings.domain.ThemeInteractor
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.logger.AndroidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 const val SHARED_PREFS = "shared_prefs"
 
 class App : Application() {
-
-    var darkTheme = false
-    lateinit var sharedPrefs: SharedPreferences
-    lateinit var themeInteractor: ThemeInteractor
+    private val themeInteractor: ThemeInteractor by inject()
     override fun onCreate() {
         super.onCreate()
-        instance = this
-        initDependencies()
+        startKoin {
+            androidContext(this@App)
+            logger(AndroidLogger(Level.DEBUG))
+            modules(dataModule, repositoryModule, interactorModule, viewModelModule)
+        }
         setupTheme()
     }
-
-    private fun initDependencies() {
-        sharedPrefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE)
-        themeInteractor = Creator.provideThemeInteractor()
-    }
-
     private fun setupTheme() {
         themeInteractor.switchTheme(themeInteractor.getCurrentTheme())
-    }
-
-    companion object {
-        private lateinit var instance: App
-
-        fun getSharedPreferences(): SharedPreferences {
-            return instance.sharedPrefs
-        }
     }
 }

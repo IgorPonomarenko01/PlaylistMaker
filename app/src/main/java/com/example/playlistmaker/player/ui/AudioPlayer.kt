@@ -3,7 +3,6 @@ package com.example.playlistmaker.player.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
@@ -13,12 +12,18 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.AudioPlayerState
 import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AudioPlayer : AppCompatActivity() {
 
-    private lateinit var viewModel: AudioPlayerViewModel
     private lateinit var binding: ActivityAudioPlayerBinding
-
+    private val viewModel: AudioPlayerViewModel by viewModel {
+        parametersOf(
+            intent.getSerializableExtra(Constants.TRACK_KEY) as Track,
+            getString(R.string.trackTimeMillisDefault)
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
@@ -27,16 +32,6 @@ class AudioPlayer : AppCompatActivity() {
         binding.playerToolBar.setNavigationOnClickListener {
             finish()
         }
-
-        val trackTimeMillisDefault = getString(R.string.trackTimeMillisDefault)
-        val track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
-
-        viewModel = ViewModelProvider(
-            this,
-            AudioPlayerViewModelFactory(track, trackTimeMillisDefault)
-        ).get(
-            AudioPlayerViewModel::class.java
-        )
 
         setupObservers()
         setupClickListeners()
