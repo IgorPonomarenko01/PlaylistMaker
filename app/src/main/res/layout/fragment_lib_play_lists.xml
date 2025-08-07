@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".library.LibraryActivity">
+    <Button
+        android:id="@+id/clearHistoryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SearchButtons"
+        android:text="@string/newPlayList"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="46dp"
+        android:src="@drawable/empty_library"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        style="@style/LibraryPlaceholder"
+        android:textFontWeight="500"
+        android:text="@string/noPlayListAvailable"/>
+
+
+</LinearLayout>
