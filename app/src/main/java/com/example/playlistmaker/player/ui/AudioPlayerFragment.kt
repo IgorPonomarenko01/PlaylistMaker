@@ -1,49 +1,61 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Utils
-import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.example.playlistmaker.player.domain.AudioPlayerState
 import com.example.playlistmaker.player.domain.PlayerStatus
 import com.example.playlistmaker.search.domain.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class AudioPlayer : AppCompatActivity() {
+class AudioPlayerFragment : Fragment() {
 
-    private lateinit var binding: ActivityAudioPlayerBinding
+    private var _binding: FragmentAudioPlayerBinding? = null
+    private val binding get() = _binding!!
+
+    private val args: AudioPlayerFragmentArgs by navArgs()
+
     private val viewModel: AudioPlayerViewModel by viewModel {
-        parametersOf(
-            intent.getSerializableExtra(Constants.TRACK_KEY) as Track,
-            getString(R.string.trackTimeMillisDefault)
-        )
+        parametersOf(args.track, getString(R.string.trackTimeMillisDefault))
     }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        binding.playerToolBar.setNavigationOnClickListener {
-            finish()
-        }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupObservers()
         setupClickListeners()
+        binding.playerToolBar.setNavigationOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
-
 
     private fun renderPlayerState(state: AudioPlayerState) {
 
         with(binding) {
-            Glide.with(this@AudioPlayer)
+            Glide.with(requireContext())
                 .load(state.track.getCoverArtWork())
-                .transform(RoundedCorners(Utils.dpToPx(8f, this@AudioPlayer)))
+                .transform(RoundedCorners(Utils.dpToPx(8f, requireContext())))
                 .placeholder(R.drawable.placeholder)
                 .into(trackImage)
 
@@ -74,7 +86,7 @@ class AudioPlayer : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.playerState.observe(this) { state ->
+        viewModel.playerState.observe(viewLifecycleOwner) { state ->
             renderPlayerState(state)
         }
     }
@@ -87,15 +99,11 @@ class AudioPlayer : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (isFinishing || !isChangingConfigurations) {
-            viewModel.pausePlayer()
-        }
+        viewModel.pausePlayer()
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (!hasFocus && viewModel.playerState.value?.playerStatus == PlayerStatus.PLAYING) {
-            viewModel.pausePlayer()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
