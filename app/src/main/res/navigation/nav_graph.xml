@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/libraryFragment">
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="com.example.playlistmaker.library.LibraryFragment"
+        android:label="LibraryFragment" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.playlistmaker.search.ui.SearchFragment"
+        android:label="SearchFragment">
+        <action
+            android:id="@+id/action_searchFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.playlistmaker.player.ui.AudioPlayerFragment"
+        android:label="AudioPlayerFragment">
+        <argument
+            android:name="track"
+            app:argType="com.example.playlistmaker.search.domain.Track" />
+    </fragment>
+    <fragment
+        android:id="@+id/libFavsFragment"
+        android:name="com.example.playlistmaker.library.LibFavsFragment"
+        android:label="LibFavsFragment" />
+    <fragment
+        android:id="@+id/libPlayListsFragment"
+        android:name="com.example.playlistmaker.library.LibPlayListsFragment"
+        android:label="LibPlayListsFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.playlistmaker.settings.ui.SettingsFragment"
+        android:label="SettingsFragment" />
+</navigation>

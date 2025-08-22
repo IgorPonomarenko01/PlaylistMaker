@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:context=".search.ui.SearchActivity">
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/tool_bar"
         style="@style/CustomToolbarTitle"
-        app:navigationIcon="@drawable/ic_back_arrow_24"
         app:title="@string/library" />
 
     <com.google.android.material.tabs.TabLayout

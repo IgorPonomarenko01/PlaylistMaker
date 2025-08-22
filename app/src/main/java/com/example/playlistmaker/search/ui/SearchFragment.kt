@@ -1,37 +1,44 @@
 package com.example.playlistmaker.search.ui
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.player.ui.AudioPlayer
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySearchBinding
+class SearchFragment : Fragment() {
+
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: SearchViewModel by viewModel()
     private var inputText: String = DEF_TEXT
     private val tracks = ArrayList<Track>()
-    private lateinit var adapter : TrackAdapter
+    private lateinit var adapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.historyState.observe(this) { historyTracks ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.historyState.observe(viewLifecycleOwner) { historyTracks ->
             if (binding.searchInput.text.isEmpty() && historyTracks.isNotEmpty()) {
                 historyAdapter.updateTracks(historyTracks)
                 binding.searchHistoryLayout.visibility = View.VISIBLE
@@ -42,7 +49,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.searchState.observe(this) { searchState ->
+        viewModel.searchState.observe(viewLifecycleOwner) { searchState ->
             when (searchState) {
                 is SearchState.Loading -> {
                     binding.placeHolderImage.visibility = View.GONE
@@ -51,6 +58,7 @@ class SearchActivity : AppCompatActivity() {
                     binding.trackList.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
                 }
+
                 is SearchState.Content -> {
                     binding.progressBar.visibility = View.GONE
                     tracks.clear()
@@ -59,6 +67,7 @@ class SearchActivity : AppCompatActivity() {
                     adapter.notifyDataSetChanged()
                     hideHistory()
                 }
+
                 is SearchState.Empty -> {
                     binding.progressBar.visibility = View.GONE
                     tracks.clear()
@@ -68,6 +77,7 @@ class SearchActivity : AppCompatActivity() {
                         false
                     )
                 }
+
                 is SearchState.Error -> {
                     binding.progressBar.visibility = View.GONE
                     tracks.clear()
@@ -90,9 +100,9 @@ class SearchActivity : AppCompatActivity() {
             playTrack(clickedTrack)
         }
 
-        binding.trackList.layoutManager = LinearLayoutManager(this)
+        binding.trackList.layoutManager = LinearLayoutManager(requireContext())
         binding.trackList.adapter = adapter
-        binding.trackHistoryList.layoutManager = LinearLayoutManager(this)
+        binding.trackHistoryList.layoutManager = LinearLayoutManager(requireContext())
         binding.trackHistoryList.adapter = historyAdapter
         binding.refreshBtn.setOnClickListener {
             hidePlaceholder()
@@ -100,12 +110,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.toolBar.setNavigationOnClickListener {
-            finish()
+            parentFragmentManager.popBackStack()
         }
 
         binding.searchInputClear.setOnClickListener {
             binding.searchInput.setText("")
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(binding.searchInput.windowToken, 0)
             hidePlaceholder()
             tracks.clear()
@@ -118,8 +129,8 @@ class SearchActivity : AppCompatActivity() {
             updateHistoryView()
         }
 
-        binding.searchInput.setOnFocusChangeListener{ _, hasFocus ->
-            if(hasFocus && binding.searchInput.text.isNullOrEmpty()) {
+        binding.searchInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.searchInput.text.isNullOrEmpty()) {
                 updateHistoryView()
             } else {
                 hideHistory()
@@ -148,8 +159,8 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchInput.addTextChangedListener(searchInputTextWatcher)
 
-        binding.searchInput.setOnEditorActionListener { _, actionId, _, ->
-            if(actionId == EditorInfo.IME_ACTION_DONE) {
+        binding.searchInput.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val text = binding.searchInput.text.toString()
                 viewModel.searchTracks(text)
                 true
@@ -165,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
+
     companion object {
         private const val DEF_TEXT = ""
     }
@@ -202,6 +214,7 @@ class SearchActivity : AppCompatActivity() {
             hideHistory()
         }
     }
+
     private fun hideHistory() {
         binding.searchHistoryLayout.visibility = View.GONE
         binding.trackList.visibility = View.VISIBLE
@@ -209,14 +222,15 @@ class SearchActivity : AppCompatActivity() {
 
     private fun playTrack(track: Track) {
         if (viewModel.clickDebounce()) {
-            val playerIntent = Intent(this, AudioPlayer::class.java).apply {
-                putExtra(Constants.TRACK_KEY, track)
-            }
-            startActivity(playerIntent)
+            val action = SearchFragmentDirections
+                .actionSearchFragmentToAudioPlayerFragment(track)
+            findNavController().navigate(action)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
 }

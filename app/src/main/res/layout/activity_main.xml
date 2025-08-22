@@ -1,41 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<androidx.fragment.app.FragmentContainerView android:id="@+id/container_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    style="@style/MainActivityStyle"
-    android:paddingHorizontal="16dp"
-    tools:context=".main.ui.MainActivity">
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:navGraph="@navigation/nav_graph"
+    app:defaultNavHost="true"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/title"
-        android:textColor="@color/yp_white"
-        android:paddingTop="14dp"
-        android:paddingBottom="12dp"
-        android:text="@string/app_name"
-        android:fontFamily="@font/ys_display_medium"
-        android:textFontWeight="500"/>
-
-<Button
-    style="@style/MainActButtonStyle"
-    android:id="@+id/search_button"
-    android:text="@string/search"
-    app:icon="@drawable/search"/>
-
-    <Button
-        style="@style/MainActButtonStyle"
-        android:id="@+id/library_button"
-        android:text="@string/library"
-        app:icon="@drawable/library"/>
-
-    <Button
-        style="@style/MainActButtonStyle"
-        android:id="@+id/settings_button"
-        android:text="@string/settings"
-        app:icon="@drawable/settings"
-        android:layout_marginBottom="28dp"/>
-</LinearLayout>
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:itemTextColor="@color/bottom_nav_text_color"
+        app:itemTextAppearanceActive="@style/BottomNavMenu"
+        app:itemTextAppearanceInactive="@style/BottomNavMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_items" />
+</androidx.constraintlayout.widget.ConstraintLayout>
