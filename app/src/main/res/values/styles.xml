@@ -125,4 +125,12 @@
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/search_placeholder_white</item>
+        <item name="itemIconTint">@color/bottom_nav_icon_color</item>
+        <item name="itemTextColor">@color/bottom_nav_text_color</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavMenu</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavMenu</item>
+    </style>
 </resources>

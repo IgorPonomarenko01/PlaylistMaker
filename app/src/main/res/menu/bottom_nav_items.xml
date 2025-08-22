@@ -3,16 +3,13 @@
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/search"
-        android:title="@string/search"
-        style="@style/BottomNavMenu"/>
+        android:title="@string/search"/>
     <item
         android:id="@+id/libraryFragment"
         android:icon="@drawable/library"
-        android:title="@string/library"
-        style="@style/BottomNavMenu"/>
+        android:title="@string/library"/>
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/settings"
-        android:title="@string/settings"
-        style="@style/BottomNavMenu"/>
+        android:title="@string/settings"/>
 </menu>
