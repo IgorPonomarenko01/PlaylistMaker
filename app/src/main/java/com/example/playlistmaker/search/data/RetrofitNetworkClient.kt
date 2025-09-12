@@ -4,13 +4,11 @@ import okio.IOException
 
 class RetrofitNetworkClient(private val iTunesService: ItunesApi) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         return try {
             if (dto is ItunesRequest) {
-                val resp = iTunesService.search(dto.text).execute()
-                val body = resp.body() ?: Response()
-
-                 body.apply { resultCode = resp.code() }
+                val resp = iTunesService.search(dto.text)
+                 resp.apply { resultCode = 200 }
             } else {
                  Response().apply { resultCode = 400 }
             }

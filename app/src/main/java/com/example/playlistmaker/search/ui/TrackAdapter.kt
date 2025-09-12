@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.Utils
+import com.example.playlistmaker.utils.Utils
 import com.example.playlistmaker.search.domain.Track
 
 class TrackAdapter(private var tracks: List<Track>,
